@@ -425,3 +425,4 @@ $.widget 'ui.domwindow',
     domwindowApi.close().done =>
       @_trigger 'close'
 
+
