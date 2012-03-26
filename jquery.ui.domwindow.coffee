@@ -79,8 +79,7 @@ $.widget 'ui.hideoverlay',
     if not ie6 then return @
     @_resize()
     if @options.bgiframe and $.fn.bgiframe
-      @$el.bgiframe
-        opacity: false
+      @$el.bgiframe()
     @
 
   _resize: ->
@@ -155,18 +154,18 @@ $.widget 'ui.hideoverlay',
     @$spinner.empty().hide()
     @
 
-$.ui.hideoverlay.create = ->
+$.ui.hideoverlay.create = (options) ->
   src = """
     <div class="ui-hideoverlay" id="domwindow-hideoverlay">
       <div class="ui-hideoverlay-bg"></div>
       <div class="ui-hideoverlay-spinner"></div>
     </div>
   """
-  $(src).hideoverlay()
+  $(src).hideoverlay(options)
 
-$.ui.hideoverlay.setup = ->
+$.ui.hideoverlay.setup = (options) ->
   if $overlay then return $overlay
-  $overlay = $.ui.hideoverlay.create().appendTo 'body'
+  $overlay = $.ui.hideoverlay.create(options).appendTo 'body'
   $overlay
 
 
@@ -177,7 +176,7 @@ $.ui.hideoverlay.setup = ->
 $.widget 'ui.domwindowdialog',
 
   options:
-    spinnersrc: null
+    spinjs: false
     height: 500
     width: 500
     fixedMinY: 30
@@ -345,13 +344,24 @@ $.ui.domwindowdialog.setup = (options) ->
   if $dialog then return $dialog
   $dialog = $.ui.domwindowdialog.create options
   $dialog.appendTo 'body'
-  $dialog.domwindowdialog 'setOverlay', $.ui.hideoverlay.setup()
+  overlayOptions = genOverlayOptions(options)
+  $dialog.domwindowdialog 'setOverlay', $.ui.hideoverlay.setup(overlayOptions)
   domwindowApi = win.domwindowApi = new DomwindowApi $dialog
   $dialog
 
 
 # ============================================================
 # widget helpers
+
+# narrowdown overlay options
+
+genOverlayOptions = (options) ->
+  ret = {}
+  if not options then return ret
+  $.each $.ui.hideoverlay.prototype.options, (key) ->
+    if options[key] isnt undefined
+      ret[key] = options[key]
+  ret
 
 # mostly we need to open dialog via anchor or button or something
 

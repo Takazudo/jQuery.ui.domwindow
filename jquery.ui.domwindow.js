@@ -1,5 +1,5 @@
 (function() {
-  var $dialog, $doc, $overlay, $win, DomwindowApi, doc, domwindowApi, genUniqId, getInfoFromOpener, ie6, resolveSilently, round, scrollOffsetH, scrollOffsetW, viewportH, viewportW, wait, win,
+  var $dialog, $doc, $overlay, $win, DomwindowApi, doc, domwindowApi, genOverlayOptions, genUniqId, getInfoFromOpener, ie6, resolveSilently, round, scrollOffsetH, scrollOffsetW, viewportH, viewportW, wait, win,
     __slice = Array.prototype.slice;
 
   win = window;
@@ -92,11 +92,7 @@
     _handleIE6: function() {
       if (!ie6) return this;
       this._resize();
-      if (this.options.bgiframe && $.fn.bgiframe) {
-        this.$el.bgiframe({
-          opacity: false
-        });
-      }
+      if (this.options.bgiframe && $.fn.bgiframe) this.$el.bgiframe();
       return this;
     },
     _resize: function() {
@@ -202,21 +198,21 @@
     }
   });
 
-  $.ui.hideoverlay.create = function() {
+  $.ui.hideoverlay.create = function(options) {
     var src;
     src = "<div class=\"ui-hideoverlay\" id=\"domwindow-hideoverlay\">\n  <div class=\"ui-hideoverlay-bg\"></div>\n  <div class=\"ui-hideoverlay-spinner\"></div>\n</div>";
-    return $(src).hideoverlay();
+    return $(src).hideoverlay(options);
   };
 
-  $.ui.hideoverlay.setup = function() {
+  $.ui.hideoverlay.setup = function(options) {
     if ($overlay) return $overlay;
-    $overlay = $.ui.hideoverlay.create().appendTo('body');
+    $overlay = $.ui.hideoverlay.create(options).appendTo('body');
     return $overlay;
   };
 
   $.widget('ui.domwindowdialog', {
     options: {
-      spinnersrc: null,
+      spinjs: false,
       height: 500,
       width: 500,
       fixedMinY: 30,
@@ -399,12 +395,24 @@
   };
 
   $.ui.domwindowdialog.setup = function(options) {
+    var overlayOptions;
     if ($dialog) return $dialog;
     $dialog = $.ui.domwindowdialog.create(options);
     $dialog.appendTo('body');
-    $dialog.domwindowdialog('setOverlay', $.ui.hideoverlay.setup());
+    overlayOptions = genOverlayOptions(options);
+    $dialog.domwindowdialog('setOverlay', $.ui.hideoverlay.setup(overlayOptions));
     domwindowApi = win.domwindowApi = new DomwindowApi($dialog);
     return $dialog;
+  };
+
+  genOverlayOptions = function(options) {
+    var ret;
+    ret = {};
+    if (!options) return ret;
+    $.each($.ui.hideoverlay.prototype.options, function(key) {
+      if (options[key] !== void 0) return ret[key] = options[key];
+    });
+    return ret;
   };
 
   getInfoFromOpener = function(el) {
