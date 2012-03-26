@@ -6,6 +6,12 @@ Just a simple ajax/iframe dialog.
 
 ## demos
 
+* [basic](http://takazudo.github.com/example-basic/)
+* [api](http://takazudo.github.com/example-api/)
+* [widgetlike](http://takazudo.github.com/example-widgetlike/)
+* [bgiframe](http://takazudo.github.com/example-bgiframe/)
+* [spinjs](http://takazudo.github.com/example-spinjs/)
+
 not yet
 
 ## Usage
