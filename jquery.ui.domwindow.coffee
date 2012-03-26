@@ -1,4 +1,13 @@
-$win = $(window)
+win = window
+doc = document
+$win = $(win)
+$doc = $(doc)
+round = Math.round
+
+$dialog = null
+$overlay = null
+
+win.domwindowApi = domwindowApi = null
 
 # ============================================================
 # browser detection
@@ -7,14 +16,33 @@ ie6 = do ->
   $el = $('<div><!--[if IE 6]><i></i><![endif]--></div>')
   return if $el.find('i').size() then true else false
 
+
 # ============================================================
 # tiny utils
+
+# deferred helper
 
 resolveSilently = ->
   $.Deferred (defer) -> defer.resolve()
 
+# handle viewport things
+
+viewportH = -> win.innerHeight or doc.documentElement.clientHeight or doc.body.clientHeight
+viewportW = -> win.innerWidth or doc.documentElement.clientWidth or doc.body.clientWidth
+scrollOffsetH = -> win.pageYOffset or doc.documentElement.scrollTop or doc.body.scrollTop
+scrollOffsetW = -> win.pageXOffset or doc.documentElement.scrollLeft or doc.body.scrollLeft
+
+# setTimeout wrapper
+
+wait = (time) ->
+  $.Deferred (defer) ->
+    setTimeout ->
+      defer.resolve()
+    , time
+
 # ============================================================
 # $.ui.hideoverlay
+# dark overlay over the page
 
 $.widget 'ui.hideoverlay',
 
@@ -106,6 +134,10 @@ $.widget 'ui.hideoverlay',
       @_trigger 'hideend'
     @_hideDefer
 
+  hideSpinner: ->
+    @$spinner.hide()
+    @
+
 $.ui.hideoverlay.create = ->
   src = """
     <div class="ui-hideoverlay" id="domwindow-hideoverlay">
@@ -116,4 +148,225 @@ $.ui.hideoverlay.create = ->
   $(src).hideoverlay()
 
 $.ui.hideoverlay.setup = ->
-  $.ui.hideoverlay.create().appendTo 'body'
+  if $overlay then return $overlay
+  $overlay = $.ui.hideoverlay.create().appendTo 'body'
+  $overlay
+
+
+# ============================================================
+# $.ui.domwindow
+# handles the dialog itself
+
+$.widget 'ui.domwindowdialog',
+
+  options:
+    height: 500
+    width: 500
+    fixedMinY: 30
+    selector_open: '.apply-domwindow-open'
+    selector_close: '.apply-domwindow-close'
+    ajaxdialog: true
+    ajaxdialog_avoidcache: true
+    iframedialog: false
+    iddialog: false
+    overlay: true
+
+  _create: ->
+    @$el = @element
+    @$el.css
+      width: @options.width
+      height: @options.height
+    @_eventify()
+    @
+
+  _eventify: ->
+    self = @
+    $doc.on 'click', @options.selector_open, (e) ->
+      e.preventDefault()
+      info = getInfoFromOpener @
+      self.open.apply self, info
+    $doc.on 'click', @options.selector_close, (e) =>
+      e.preventDefault()
+      @close()
+    $win.on 'resize', =>
+      @center()
+    @
+
+  setOverlay: ($overlay) ->
+    if not @options.overlay then return @
+    @$overlay = $overlay
+    @overlay = $overlay.data 'hideoverlay'
+    @
+
+  center: ->
+
+    props = {}
+    props.left = round( viewportW()/2 + scrollOffsetW() - round(@$el.outerWidth()/2) )
+
+    setTopAbsolutely = =>
+      props.top = round( viewportH()/2 + scrollOffsetH() - round(@$el.outerHeight()/2) )
+    setTopFixedly = =>
+      props.top = round( viewportH()/2 - round(@$el.outerHeight()/2) )
+
+    # can't see left side if window was too samll
+    if props.left < 0 then props.left = 0
+
+    # if win height was enough, put the dialog to the center
+    if @options.height + 50 < viewportH()
+      if ie6
+        props.position = 'absolute'
+        setTopAbsolutely()
+      else
+        if props.left isnt 0
+          props.position = 'fixed'
+          setTopFixedly()
+        # but win width was not enough, stop fixed
+        else
+          props.position = 'absolute'
+          setTopAbsolutely()
+  
+    # if win height was not enough, put the dialog to the dialog absolutely
+    # because the we can't see the bottom of the dialog with fixed
+    else
+      props.position = 'absolute'
+      props.top = @options.fixedMinY + scrollOffsetH()
+    @$el.css props
+    @
+
+  open: (src, options) ->
+
+    o = options
+
+    $.Deferred (defer) =>
+
+      complete = =>
+        @$el.fadeIn 200, =>
+          @overlay?.hideSpinner()
+          @_trigger 'open'
+        wait(0).done => @center()
+        defer.resolve()
+
+      dialogType = null
+      if @options.ajaxdialog then dialogType = 'ajax'
+      if @options.iframedialog then dialogType = 'iframe'
+      if @options.iddialog then dialogType = 'id'
+      if o?.ajaxdialog then dialogType = 'ajax'
+      if o?.iframedialog then dialogType = 'iframe'
+      if o?.iddialog then dialogType = 'id'
+
+      switch dialogType
+        when 'ajax'
+          @overlay?.show()
+          (@_ajaxGet src).done (data) =>
+            @$el.empty().append data
+            complete()
+        when 'iframe'
+          @overlay?.show()
+          @$el.empty().append @_createIframeSrc(src)
+          complete()
+        when 'id'
+          @overlay?.show()
+          @$el.empty().append $('#' + src).html()
+          complete()
+
+    .promise()
+
+  close: ->
+    @overlay?.hide()
+    @$el.fadeOut 200, => @_trigger 'close'
+    @
+
+  _ajaxGet: (url) ->
+    options =
+      url: url
+      dataType: 'text'
+    if @options.ajaxdialog_avoidcache
+      options.cache = false
+    $.ajax options
+
+  _createIframeSrc: (url) ->
+    name = genUniqId()
+    """
+      <iframe
+        frameborder="0" hspace="0" wspace="0" src="#{url}" name="#{name}"
+        style="width:100%; height:100%; border:none; background-color:#fff"
+      ></iframe>
+    """
+
+$.ui.domwindowdialog.create = (options) ->
+  src = """
+    <div class="ui-domwindowdialog">
+      hoge
+      <a href="#" class="apply-domwindow-close">close</a>
+    </div>
+  """
+  $(src).domwindowdialog(options)
+
+$.ui.domwindowdialog.setup = (options) ->
+  if $dialog then return $dialog
+  $dialog = $.ui.domwindowdialog.create options
+  $dialog.appendTo 'body'
+  $dialog.domwindowdialog 'setOverlay', $.ui.hideoverlay.setup()
+  domwindowApi = win.domwindowApi = new DomwindowApi $dialog
+  $dialog
+
+
+# ============================================================
+# widget helpers
+
+# mostly we need to open dialog via anchor or button or something
+
+getInfoFromOpener = (el) ->
+  $el = $(el)
+  ret = []
+
+  src = $el.data('domwindowUrl') or $el.data('domwindowId')
+  if not src then src = $el.attr('href').replace(/^#/,'')
+  ret.push src
+
+  o = {}
+  if $el.data('domwindowAjaxdialog') then o.ajaxdialog = true
+  if $el.data('domwindowIframedialog') then o.iframedialog = true
+  if $el.data('domwindowIddialog') then o.iddialog = true
+
+  ret.push o
+  ret
+
+genUniqId = -> "domwindow-uniqid-#{Math.round(Math.random()*1000)}"
+
+# DomwindowApi will be attached to window.domwindowApi.
+# is a facade to domwindowdialog
+
+class DomwindowApi
+  constructor: (@$dialog) ->
+    @dialog = @$dialog.data 'domwindowdialog' # widget instance
+  open: (args...) ->
+    @dialog.open.apply @dialog, args
+    @
+  close: (args...) ->
+    @dialog.close.apply @dialog, args
+    @
+
+
+# ============================================================
+# $.ui.domwindow
+# jQuery.ui.dialog widget style
+
+$.widget 'ui.domwindow',
+  options:
+    iddialog: true
+  _create: ->
+    @$el = @element
+    $.ui.domwindowdialog.setup()
+    @_id = @$el.attr('id') or do =>
+      id = genUniqId()
+      @$el.attr 'id', id
+      id
+    @
+  open: ->
+    domwindowApi.open @_id, @options
+    @
+  close: ->
+    domwindowApi.close()
+    @
+
