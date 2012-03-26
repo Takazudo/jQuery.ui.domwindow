@@ -177,6 +177,7 @@ $.ui.hideoverlay.setup = ->
 $.widget 'ui.domwindowdialog',
 
   options:
+    spinnersrc: null
     height: 500
     width: 500
     fixedMinY: 30
@@ -184,6 +185,7 @@ $.widget 'ui.domwindowdialog',
     selector_close: '.apply-domwindow-close'
     ajaxdialog: true
     ajaxdialog_avoidcache: true
+    ajaxdialog_mindelay: 300
     iframedialog: false
     iddialog: false
     overlay: true
@@ -230,7 +232,7 @@ $.widget 'ui.domwindowdialog',
     if props.left < 0 then props.left = 0
 
     # if win height was enough, put the dialog to the center
-    if @options.height + 50 < viewportH()
+    if @$el.innerHeight() + 50 < viewportH()
       if ie6
         props.position = 'absolute'
         setTopAbsolutely()
@@ -275,10 +277,18 @@ $.widget 'ui.domwindowdialog',
     if o?.iframedialog then dialogType = 'iframe'
     if o?.iddialog then dialogType = 'id'
 
+    w = o.width or @options.width
+    h = o.height or @options.height
+    @$el.css
+      width: w
+      height: h
+
     switch dialogType
       when 'ajax'
         @overlay?.show()
-        (@_ajaxGet src).done (data) =>
+        delay = @options.ajaxdialog_mindelay
+        $.when((@_ajaxGet src), (wait delay)).done (args...) =>
+          data = args[0][0]
           @$el.empty().append data
           complete()
       when 'iframe'
@@ -353,6 +363,8 @@ getInfoFromOpener = (el) ->
   if $el.data('domwindowAjaxdialog') then o.ajaxdialog = true
   if $el.data('domwindowIframedialog') then o.iframedialog = true
   if $el.data('domwindowIddialog') then o.iddialog = true
+  o.height = $el.data('domwindowHeight') or null
+  o.width = $el.data('domwindowWidth') or null
 
   ret.push o
   ret

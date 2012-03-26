@@ -216,6 +216,7 @@
 
   $.widget('ui.domwindowdialog', {
     options: {
+      spinnersrc: null,
       height: 500,
       width: 500,
       fixedMinY: 30,
@@ -223,6 +224,7 @@
       selector_close: '.apply-domwindow-close',
       ajaxdialog: true,
       ajaxdialog_avoidcache: true,
+      ajaxdialog_mindelay: 300,
       iframedialog: false,
       iddialog: false,
       overlay: true
@@ -277,7 +279,7 @@
         return props.top = round(viewportH() / 2 - round(_this.$el.outerHeight() / 2));
       };
       if (props.left < 0) props.left = 0;
-      if (this.options.height + 50 < viewportH()) {
+      if (this.$el.innerHeight() + 50 < viewportH()) {
         if (ie6) {
           props.position = 'absolute';
           setTopAbsolutely();
@@ -298,7 +300,7 @@
       return this;
     },
     open: function(src, options) {
-      var complete, currentOpen, dialogType, o, _ref, _ref2, _ref3,
+      var complete, currentOpen, delay, dialogType, h, o, w, _ref, _ref2, _ref3,
         _this = this;
       o = options;
       this._isOpen = true;
@@ -323,10 +325,20 @@
       if (o != null ? o.ajaxdialog : void 0) dialogType = 'ajax';
       if (o != null ? o.iframedialog : void 0) dialogType = 'iframe';
       if (o != null ? o.iddialog : void 0) dialogType = 'id';
+      w = o.width || this.options.width;
+      h = o.height || this.options.height;
+      this.$el.css({
+        width: w,
+        height: h
+      });
       switch (dialogType) {
         case 'ajax':
           if ((_ref = this.overlay) != null) _ref.show();
-          (this._ajaxGet(src)).done(function(data) {
+          delay = this.options.ajaxdialog_mindelay;
+          $.when(this._ajaxGet(src), wait(delay)).done(function() {
+            var args, data;
+            args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+            data = args[0][0];
             _this.$el.empty().append(data);
             return complete();
           });
@@ -400,6 +412,8 @@
     if ($el.data('domwindowAjaxdialog')) o.ajaxdialog = true;
     if ($el.data('domwindowIframedialog')) o.iframedialog = true;
     if ($el.data('domwindowIddialog')) o.iddialog = true;
+    o.height = $el.data('domwindowHeight') || null;
+    o.width = $el.data('domwindowWidth') || null;
     ret.push(o);
     return ret;
   };

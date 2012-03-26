@@ -33,14 +33,17 @@ pre{
 <script>
 $(function(){
 	$.ui.domwindowdialog.setup({
-		width: 600,
-		height: 300
+		width: 600, // dialog width
+		height: 300, // dialog height
+		spinnersrc: '../spinner.gif', // specify this for preload
+		selector_open: '.apply-domwindow-open', // opener selector
+		selector_close: '.apply-domwindow-close' // closer selector
 	});
 });
 </script>
 </head>
 <body><div id="all">
-<h1><a href="https://github.com/Takazudo/jQuery.ui.domwindow">jQuery.ui.domwindow</a> demo</h1>
+<h1><a href="https://github.com/Takazudo/jQuery.ui.domwindow">jQuery.ui.domwindow</a> - demo - basic</h1>
 <h2>ajaxdialog (source from href)</h2>
 <ul>
 <li><a
@@ -115,9 +118,30 @@ $(function(){
     data-domwindow-id=&quot;example1&quot;
 &gt;open&lt;/a&gt;</pre>
 
+<h2>custom width/height</h2>
+<ul>
+<li><a
+	class="apply-domwindow-open"
+	href="dialog1.html"
+	data-domwindow-ajaxdialog="true"
+	data-domwindow-width="800"
+	data-domwindow-height="700"
+>open</a></li>
+</ul>
+<pre>&lt;a
+    class=&quot;apply-domwindow-open&quot;
+    href=&quot;dialog1.html&quot;
+    data-domwindow-ajaxdialog=&quot;true&quot;
+    data-domwindow-width=&quot;800&quot;
+    data-domwindow-height=&quot;800&quot;
+&gt;open&lt;/a&gt;</pre>
+
+
 <div id="example1">
-	<p>iddiaglo example</p>
-	<p><a class="apply-domwindow-close" href="#">close</a></p>
+	<div style="padding:30px">
+		<h2>iddiaglo example</h2>
+		<p><a class="apply-domwindow-close" href="#">close</a></p>
+	</div>
 </div>
 
 </div></body>
