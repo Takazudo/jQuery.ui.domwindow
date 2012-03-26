@@ -1,4 +1,4 @@
-Note: still under dev.
+Note: not well tested yet.
 
 # jQuery.ui.domwindow
 
