@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jQuery.ui.domwindow</title>
+<link rel="stylesheet" href="../domwindow.css">
+<style>
+body{
+	text-align:center;
+	font-family:sans-serif;
+}
+#all{
+	text-align:left;
+	width:800px;
+	margin:0 auto;
+}
+.ui-domwindowdialog{
+	background:#fff;
+}
+pre{
+	border:1px solid #000;
+	padding:10px;
+	font-size:15px;
+	font-family:monospace;
+}
+#iddialogcontent{
+	display:none;
+}
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="../lib/jquery.ui.widget.js"></script>
+<script src="../jquery.ui.domwindow.js"></script>
+<script>
+$(function(){
+	$.ui.domwindowdialog.setup({
+		width: 600, // dialog width
+		height: 300, // dialog height
+		spinnersrc: '../spinner.gif' // specify this for preload
+	});
+});
+</script>
+</head>
+<body><div id="all">
+<h1><a href="https://github.com/Takazudo/jQuery.ui.domwindow">jQuery.ui.domwindow</a> - demo - api</h1>
+<h2>ajaxdialog</h2>
+<button id="apiex-ajax-open">open</button>
+<script>
+$(function(){
+	$('#apiex-ajax-open').click(function(){
+		window.domwindowApi.open('dialog1.html', {
+			ajaxdialog: true,
+			width: 400,
+			height: 600,
+			callback: function($dialog){
+				console.log('opend!', $dialog);
+			}
+		});
+	});
+});
+</script>
+<pre>$(function(){
+    $('#apiex-ajax-open').click(function(){
+        window.domwindowApi.open('dialog1.html', {
+            ajaxdialog: true,
+            width: 400,
+            height: 600,
+            callback: function($dialog){
+                console.log('opend!', $dialog);
+            }
+        });
+    });
+});</pre>
+
+<h2>iframedialog</h2>
+<button id="apiex-iframe-open">open</button>
+<script>
+$(function(){
+	$('#apiex-iframe-open').click(function(){
+		window.domwindowApi.open('dialog2.html', {
+			iframedialog: true,
+			width: 600,
+			height: 200,
+			callback: function($dialog){
+				console.log('opend!', $dialog);
+			}
+		});
+	});
+});
+</script>
+<pre>$(function(){
+    $('#apiex-iframe-open').click(function(){
+        window.domwindowApi.open('dialog2.html', {
+            iframedialog: true,
+            width: 600,
+            height: 200,
+            callback: function($dialog){
+                console.log('opend!', $dialog);
+            }
+        });
+    });
+});</pre>
+
+<h2>iddialog</h2>
+<button id="apiex-iddialog-open">open</button>
+<script>
+$(function(){
+	$('#apiex-iddialog-open').click(function(){
+		window.domwindowApi.open('iddialogcontent', {
+			iddialog: true,
+			width: 800,
+			height: 800,
+			callback: function($dialog){
+				console.log('opend!', $dialog);
+			}
+		});
+	});
+});
+</script>
+<pre>$(function(){
+    $('#apiex-iddialog-open').click(function(){
+        window.domwindowApi.open('iddialogcontent', {
+            iddialog: true,
+            width: 800,
+            height: 800,
+            callback: function($dialog){
+                console.log('opend!', $dialog);
+            }
+        });
+    });
+});</pre>
+
+<div id="iddialogcontent">
+	<div style="padding:30px">
+		<h2>iddialog example</h2>
+		<p><a class="apply-domwindow-close" href="#">close</a></p>
+	</div>
+</div>
+
+</div></body>
+</html>

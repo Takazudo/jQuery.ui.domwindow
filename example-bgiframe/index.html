@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jQuery.ui.domwindow</title>
+<link rel="stylesheet" href="../domwindow.css">
+<style>
+body{
+	text-align:center;
+	font-family:sans-serif;
+}
+#all{
+	text-align:left;
+	width:800px;
+	margin:0 auto;
+}
+.ui-domwindowdialog{
+	background:#fff;
+}
+pre{
+	border:1px solid #000;
+	padding:10px;
+	font-size:15px;
+	font-family:monospace;
+}
+#iddialogcontent{
+	display:none;
+}
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<!--[if IE 6]><script src="../lib/jquery.bgiframe.js"></script><![endif]-->
+<script src="../lib/jquery.ui.widget.js"></script>
+<script src="../jquery.ui.domwindow.js"></script>
+<script>
+$(function(){
+	$.ui.domwindowdialog.setup({
+		width: 600, // dialog width
+		height: 300, // dialog height
+		bgiframe: true // omg help me around select
+	});
+});
+</script>
+</head>
+<body><div id="all">
+<h1><a href="https://github.com/Takazudo/jQuery.ui.domwindow">jQuery.ui.domwindow</a> - demo - bgiframe</h1>
+<h2>setup</h2>
+<p>Followwing setup will use <a target="_blank" href="https://github.com/brandonaaron/bgiframe">bgiframe</a> for overlay.<br>Use this when you got troubled with select element on ie6.</p>
+<pre>$(function(){
+    $.ui.domwindowdialog.setup({
+        width: 600, // dialog width
+        height: 300, // dialog height
+        <strong>bgiframe: true</strong> // omg help me around select
+    });
+});</pre>
+<p>Make sure that you loaded bgiframe like below.</p>
+<pre>&lt;!--[if IE 6]&gt;&lt;script src=&quot;jquery.bgiframe.js&quot;&gt;&lt;/script&gt;&lt;![endif]--&gt;</pre>
+
+<h2>ajaxdialog (source from href)</h2>
+<select>
+<option>test test test test test test test test test test test test test test test test test test test test test </option>
+<option>test test test test test test test test test test test test test test test test test test test test test </option>
+<option>test test test test test test test test test test test test test test test test test test test test test </option>
+<option>test test test test test test test test test test test test test test test test test test test test test </option>
+</select>
+<select>
+<option>test test test test test test test test test test test test test test test test test test test test test </option>
+<option>test test test test test test test test test test test test test test test test test test test test test </option>
+<option>test test test test test test test test test test test test test test test test test test test test test </option>
+<option>test test test test test test test test test test test test test test test test test test test test test </option>
+</select>
+<select>
+<option>test test test test test test test test test test test test test test test test test test test test test </option>
+<option>test test test test test test test test test test test test test test test test test test test test test </option>
+<option>test test test test test test test test test test test test test test test test test test test test test </option>
+<option>test test test test test test test test test test test test test test test test test test test test test </option>
+</select>
+<select>
+<option>test test test test test test test test test test test test test test test test test test test test test </option>
+<option>test test test test test test test test test test test test test test test test test test test test test </option>
+<option>test test test test test test test test test test test test test test test test test test test test test </option>
+<option>test test test test test test test test test test test test test test test test test test test test test </option>
+</select>
+<ul>
+<li><a
+	class="apply-domwindow-open"
+	href="dialog1.html"
+	data-domwindow-ajaxdialog="true"
+>open</a></li>
+</ul>
+<pre>&lt;a
+    class=&quot;apply-domwindow-open&quot;
+    href=&quot;dialog1.html&quot;
+    data-domwindow-ajaxdialog=&quot;true&quot;
+&gt;open&lt;/a&gt;</pre>
+
+</div></body>
+</html>

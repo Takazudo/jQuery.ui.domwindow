@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jQuery.ui.domwindow</title>
+<link rel="stylesheet" href="../domwindow.css">
+<style>
+body{
+	text-align:center;
+	font-family:sans-serif;
+}
+#all{
+	text-align:left;
+	width:800px;
+	margin:0 auto;
+}
+.ui-domwindowdialog{
+	background:#fff;
+}
+pre{
+	border:1px solid #000;
+	padding:10px;
+	font-size:15px;
+	font-family:monospace;
+}
+#iddialogcontent{
+	display:none;
+}
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="../lib/jquery.ui.widget.js"></script>
+<script src="../jquery.ui.domwindow.js"></script>
+<script>
+$(function(){
+	$.ui.domwindowdialog.setup({
+		spinnersrc: '../spinner.gif' // specify this for preload
+	});
+});
+</script>
+</head>
+<body><div id="all">
+<h1><a href="https://github.com/Takazudo/jQuery.ui.domwindow">jQuery.ui.domwindow</a> - demo - widgetlike</h1>
+
+<h2>widgetlike</h2>
+<p>Dialogs can be handled like <a href="http://jqueryui.com/demos/dialog/">jQuery.ui.dialog</a></p>
+<button id="widgetlike-open">open</button>
+<script>
+$(function(){
+	var $dialog = $('#iddialogcontent').domwindow({
+		width: 700,
+		height: 600,
+		open: function(event, data){
+			console.log('opened1!', data.dialog);
+		},
+		close: function(){
+			console.log('closed1!');
+		}
+	});
+	$dialog.bind('domwindow.open', function(e, data){
+		console.log('opened2!', data.dialog);
+	});
+	$dialog.bind('domwindow.close', function(){
+		console.log('closed2!');
+	});
+	$('#widgetlike-open').click(function(){
+		$dialog.domwindow('open');
+	});
+	$(document).on('click', '.widgetlike-close', function(){
+		$dialog.domwindow('close');
+	});
+});
+</script>
+<pre>$(function(){
+    var $dialog = $('#iddialogcontent').domwindow({
+        width: 700,
+        height: 600,
+        open: function(event, data){
+            console.log('opened1!', data.dialog);
+        },
+        close: function(){
+            console.log('closed1!');
+        }
+    });
+    $dialog.bind('domwindow.open', function(e, data){
+        console.log('opened2!', data.dialog);
+    });
+    $dialog.bind('domwindow.close', function(){
+        console.log('closed2!');
+    });
+    $('#widgetlike-open').click(function(){
+        $dialog.domwindow('open');
+    });
+    $(document).on('click', '.widgetlike-close', function(){
+        $dialog.domwindow('close');
+    });
+});</pre>
+
+
+
+<div id="iddialogcontent">
+	<div style="padding:30px">
+		<h2>iddialog example</h2>
+		<button class="widgetlike-close">close</button>
+	</div>
+</div>
+
+</div></body>
+</html>
