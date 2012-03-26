@@ -189,6 +189,7 @@ $.widget 'ui.domwindowdialog',
     iframedialog: false
     iddialog: false
     overlay: true
+  widgetEventPrefix: 'domwindowdialog.'
 
   _create: ->
     @$el = @element
@@ -304,12 +305,14 @@ $.widget 'ui.domwindowdialog',
     currentOpen
 
   close: ->
-    if not @_isOpen then return @
-    @_currentOpen?.kill()
-    @_isOpen = false
-    @overlay?.hide()
-    @$el.fadeOut 200, => @_trigger 'close'
-    @
+    $.Deferred (defer) =>
+      if not @_isOpen then return @
+      @_currentOpen?.kill()
+      @_isOpen = false
+      @overlay?.hide()
+      @$el.fadeOut 200, =>
+        defer.resolve()
+        @_trigger 'close'
 
   _ajaxGet: (url) ->
     options =
@@ -379,10 +382,8 @@ class DomwindowApi
     @dialog = @$dialog.data 'domwindowdialog' # widget instance
   open: (args...) ->
     @dialog.open.apply @dialog, args
-    @
   close: (args...) ->
     @dialog.close.apply @dialog, args
-    @
 
 
 # ============================================================
@@ -392,6 +393,7 @@ class DomwindowApi
 $.widget 'ui.domwindow',
   options:
     iddialog: true
+  widgetEventPrefix: 'domwindow.'
   _create: ->
     @$el = @element
     $.ui.domwindowdialog.setup()
@@ -401,9 +403,9 @@ $.widget 'ui.domwindow',
       id
     @
   open: ->
-    domwindowApi.open @_id, @options
-    @
+    (domwindowApi.open @_id, @options).defer.done =>
+      @_trigger 'open', {}, { dialog: $dialog }
   close: ->
-    domwindowApi.close()
-    @
+    domwindowApi.close().done =>
+      @_trigger 'close'
 

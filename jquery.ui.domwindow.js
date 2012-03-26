@@ -229,6 +229,7 @@
       iddialog: false,
       overlay: true
     },
+    widgetEventPrefix: 'domwindowdialog.',
     _create: function() {
       this.$el = this.element;
       this.$el.css({
@@ -359,16 +360,18 @@
       return currentOpen;
     },
     close: function() {
-      var _ref, _ref2,
-        _this = this;
-      if (!this._isOpen) return this;
-      if ((_ref = this._currentOpen) != null) _ref.kill();
-      this._isOpen = false;
-      if ((_ref2 = this.overlay) != null) _ref2.hide();
-      this.$el.fadeOut(200, function() {
-        return _this._trigger('close');
+      var _this = this;
+      return $.Deferred(function(defer) {
+        var _ref, _ref2;
+        if (!_this._isOpen) return _this;
+        if ((_ref = _this._currentOpen) != null) _ref.kill();
+        _this._isOpen = false;
+        if ((_ref2 = _this.overlay) != null) _ref2.hide();
+        return _this.$el.fadeOut(200, function() {
+          defer.resolve();
+          return _this._trigger('close');
+        });
       });
-      return this;
     },
     _ajaxGet: function(url) {
       var options;
@@ -432,15 +435,13 @@
     DomwindowApi.prototype.open = function() {
       var args;
       args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-      this.dialog.open.apply(this.dialog, args);
-      return this;
+      return this.dialog.open.apply(this.dialog, args);
     };
 
     DomwindowApi.prototype.close = function() {
       var args;
       args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-      this.dialog.close.apply(this.dialog, args);
-      return this;
+      return this.dialog.close.apply(this.dialog, args);
     };
 
     return DomwindowApi;
@@ -451,6 +452,7 @@
     options: {
       iddialog: true
     },
+    widgetEventPrefix: 'domwindow.',
     _create: function() {
       var _this = this;
       this.$el = this.element;
@@ -464,12 +466,18 @@
       return this;
     },
     open: function() {
-      domwindowApi.open(this._id, this.options);
-      return this;
+      var _this = this;
+      return (domwindowApi.open(this._id, this.options)).defer.done(function() {
+        return _this._trigger('open', {}, {
+          dialog: $dialog
+        });
+      });
     },
     close: function() {
-      domwindowApi.close();
-      return this;
+      var _this = this;
+      return domwindowApi.close().done(function() {
+        return _this._trigger('close');
+      });
     }
   });
 
