@@ -267,6 +267,7 @@ $.widget 'ui.domwindowdialog',
       @$el.fadeIn 200, =>
         @overlay?.hideSpinner()
         @_trigger 'open'
+        if options?.callback then options.callback.apply @$el, [@$el]
       wait(0).done => @center()
       currentOpen.defer.resolve()
 

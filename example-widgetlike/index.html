@@ -23,7 +23,7 @@ pre{
 	font-size:15px;
 	font-family:monospace;
 }
-#example1{
+#iddialogcontent{
 	display:none;
 }
 </style>
@@ -46,7 +46,7 @@ $(function(){
 <button id="widgetlike-open">open</button>
 <script>
 $(function(){
-	var $dialog = $('#example1').domwindow({
+	var $dialog = $('#iddialogcontent').domwindow({
 		width: 700,
 		height: 600,
 		open: function(event, data){
@@ -71,7 +71,7 @@ $(function(){
 });
 </script>
 <pre>$(function(){
-    var $dialog = $('#example1').domwindow({
+    var $dialog = $('#iddialogcontent').domwindow({
         width: 700,
         height: 600,
         open: function(event, data){
@@ -97,7 +97,7 @@ $(function(){
 
 
 
-<div id="example1">
+<div id="iddialogcontent">
 	<div style="padding:30px">
 		<h2>iddialog example</h2>
 		<button class="widgetlike-close">close</button>

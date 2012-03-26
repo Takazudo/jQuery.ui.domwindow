@@ -23,7 +23,7 @@ pre{
 	font-size:15px;
 	font-family:monospace;
 }
-#example1{
+#iddialogcontent{
 	display:none;
 }
 </style>
@@ -44,6 +44,18 @@ $(function(){
 </head>
 <body><div id="all">
 <h1><a href="https://github.com/Takazudo/jQuery.ui.domwindow">jQuery.ui.domwindow</a> - demo - basic</h1>
+<h2>setup</h2>
+<p>Do like this first.<br>domwindowdialog will delegate clicks.</p>
+<pre>$(function(){
+    $.ui.domwindowdialog.setup({
+        width: 600, // dialog width
+        height: 300, // dialog height
+        spinnersrc: '../spinner.gif', // specify this for preload
+        selector_open: '.apply-domwindow-open', // opener selector
+        selector_close: '.apply-domwindow-close' // closer selector
+    });
+});</pre>
+
 <h2>ajaxdialog (source from href)</h2>
 <ul>
 <li><a
@@ -92,13 +104,13 @@ $(function(){
 <ul>
 <li><a
 	class="apply-domwindow-open"
-	href="#example1"
+	href="#iddialogcontent"
 	data-domwindow-iddialog="true"
 >open</a></li>
 </ul>
 <pre>&lt;a
     class=&quot;apply-domwindow-open&quot;
-    href=&quot;#example1&quot;
+    href=&quot;#iddialogcontent&quot;
     data-domwindow-iddialog=&quot;true&quot;
 &gt;open&lt;/a&gt;</pre>
 
@@ -108,14 +120,14 @@ $(function(){
 	class="apply-domwindow-open"
 	href="#"
 	data-domwindow-iddialog="true"
-	data-domwindow-id="example1"
+	data-domwindow-id="iddialogcontent"
 >open</a></li>
 </ul>
 <pre>&lt;a
     class=&quot;apply-domwindow-open&quot;
     href=&quot;#&quot;
     data-domwindow-iddialog=&quot;true&quot;
-    data-domwindow-id=&quot;example1&quot;
+    data-domwindow-id=&quot;iddialogcontent&quot;
 &gt;open&lt;/a&gt;</pre>
 
 <h2>custom width/height</h2>
@@ -137,7 +149,7 @@ $(function(){
 &gt;open&lt;/a&gt;</pre>
 
 
-<div id="example1">
+<div id="iddialogcontent">
 	<div style="padding:30px">
 		<h2>iddialog example</h2>
 		<p><a class="apply-domwindow-close" href="#">close</a></p>

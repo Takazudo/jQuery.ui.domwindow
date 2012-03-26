@@ -312,7 +312,10 @@
         _this.$el.fadeIn(200, function() {
           var _ref;
           if ((_ref = _this.overlay) != null) _ref.hideSpinner();
-          return _this._trigger('open');
+          _this._trigger('open');
+          if (options != null ? options.callback : void 0) {
+            return options.callback.apply(_this.$el, [_this.$el]);
+          }
         });
         wait(0).done(function() {
           return _this.center();
