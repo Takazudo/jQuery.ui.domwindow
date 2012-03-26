@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jQuery.ui.domwindow</title>
+<link rel="stylesheet" href="../domwindow.css">
+<style>
+body{
+	text-align:center;
+	font-family:sans-serif;
+}
+#all{
+	text-align:left;
+	width:800px;
+	margin:0 auto;
+}
+.ui-domwindowdialog{
+	background:#fff;
+}
+pre{
+	border:1px solid #000;
+	padding:10px;
+	font-size:15px;
+	font-family:monospace;
+}
+#example1{
+	display:none;
+}
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="../lib/jquery.ui.widget.js"></script>
+<script src="../jquery.ui.domwindow.js"></script>
+<script>
+$(function(){
+	$.ui.domwindowdialog.setup({
+		width: 600,
+		height: 300
+	});
+});
+</script>
+</head>
+<body><div id="all">
+<h1><a href="https://github.com/Takazudo/jQuery.ui.domwindow">jQuery.ui.domwindow</a> demo</h1>
+<h2>ajaxdialog (source from href)</h2>
+<ul>
+<li><a
+	class="apply-domwindow-open"
+	href="dialog1.html"
+	data-domwindow-ajaxdialog="true"
+>open</a></li>
+</ul>
+<pre>&lt;a
+    class=&quot;apply-domwindow-open&quot;
+    href=&quot;dialog1.html&quot;
+    data-domwindow-ajaxdialog=&quot;true&quot;
+&gt;open&lt;/a&gt;</pre>
+
+<h2>ajaxdialog (source from data-domwindow-ajaxdialog)</h2>
+<ul>
+<li><a
+	class="apply-domwindow-open"
+	href="#"
+	data-domwindow-url="dialog1.html"
+	data-domwindow-ajaxdialog="true"
+>open</a></li>
+</ul>
+<pre>&lt;a
+    class=&quot;apply-domwindow-open&quot;
+    href=&quot;#&quot;
+    data-domwindow-url=&quot;dialog1.html&quot;
+    data-domwindow-ajaxdialog=&quot;true&quot;
+&gt;open&lt;/a&gt;</pre>
+
+<h2>iframedialog</h2>
+<ul>
+<li><a
+	class="apply-domwindow-open"
+	href="dialog2.html"
+	data-domwindow-iframedialog="true"
+>open</a></li>
+</ul>
+<pre>&lt;a
+    class=&quot;apply-domwindow-open&quot;
+    href=&quot;dialog2.html&quot;
+    data-domwindow-iframedialog=&quot;true&quot;
+&gt;open&lt;/a&gt;</pre>
+
+<h2>iddialog (source from href)</h2>
+<ul>
+<li><a
+	class="apply-domwindow-open"
+	href="#example1"
+	data-domwindow-iddialog="true"
+>open</a></li>
+</ul>
+<pre>&lt;a
+    class=&quot;apply-domwindow-open&quot;
+    href=&quot;#example1&quot;
+    data-domwindow-iddialog=&quot;true&quot;
+&gt;open&lt;/a&gt;</pre>
+
+<h2>iddialog (source from data-domwindow-id)</h2>
+<ul>
+<li><a
+	class="apply-domwindow-open"
+	href="#"
+	data-domwindow-iddialog="true"
+	data-domwindow-id="example1"
+>open</a></li>
+</ul>
+<pre>&lt;a
+    class=&quot;apply-domwindow-open&quot;
+    href=&quot;#&quot;
+    data-domwindow-iddialog=&quot;true&quot;
+    data-domwindow-id=&quot;example1&quot;
+&gt;open&lt;/a&gt;</pre>
+
+<div id="example1">
+	<p>iddiaglo example</p>
+	<p><a class="apply-domwindow-close" href="#">close</a></p>
+</div>
+
+</div></body>
+</html>

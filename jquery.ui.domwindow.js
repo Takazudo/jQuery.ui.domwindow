@@ -63,7 +63,7 @@
       spinnersrc: null,
       maxopacity: 0.8,
       bgiframe: false,
-      spinjs: true
+      spinjs: false
     },
     widgetEventPrefix: 'hideoverlay.',
     _active: false,
@@ -332,12 +332,12 @@
           });
           break;
         case 'iframe':
-          if ((_ref2 = this.overlay) != null) _ref2.show();
+          if ((_ref2 = this.overlay) != null) _ref2.show(true);
           this.$el.empty().append(this._createIframeSrc(src));
           complete();
           break;
         case 'id':
-          if ((_ref3 = this.overlay) != null) _ref3.show();
+          if ((_ref3 = this.overlay) != null) _ref3.show(true);
           this.$el.empty().append($('#' + src).html());
           complete();
       }

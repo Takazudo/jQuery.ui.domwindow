@@ -33,7 +33,7 @@ html,body{
 	}
 
 .ui-domwindowdialog{
-	border:3px solid red;
+	text-align:left;
 	position:fixed;
 	_position:absolute;
 	left:0;

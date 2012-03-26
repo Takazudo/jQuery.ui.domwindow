@@ -50,7 +50,7 @@ $.widget 'ui.hideoverlay',
     spinnersrc: null
     maxopacity: 0.8
     bgiframe: false
-    spinjs: true
+    spinjs: false
   widgetEventPrefix: 'hideoverlay.'
 
   _active: false
@@ -282,11 +282,11 @@ $.widget 'ui.domwindowdialog',
           @$el.empty().append data
           complete()
       when 'iframe'
-        @overlay?.show()
+        @overlay?.show(true)
         @$el.empty().append @_createIframeSrc(src)
         complete()
       when 'id'
-        @overlay?.show()
+        @overlay?.show(true)
         @$el.empty().append $('#' + src).html()
         complete()
 
