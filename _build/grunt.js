@@ -12,11 +12,22 @@ module.exports = function(grunt){
   var log = grunt.log;
 
   grunt.initConfig({
+    pkg: '<json:info.json>',
+    meta: {
+      banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
+        ' <%= grunt.template.today("m/d/yyyy") %>\n' +
+        ' <%= pkg.homepage ? "* " + pkg.homepage + "\n" : "" %>' +
+        ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
+        ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */'
+    },
+    concat: {
+      '../jquery.ui.domwindow.js': [ '<banner>', '../jquery.ui.domwindow.js' ]
+    },
     watch: {
       files: [
         '../jquery.ui.domwindow.coffee'
       ],
-      tasks: 'coffee notifyOK'
+      tasks: 'coffee concat notifyOK'
     },
     coffee: {
       '../jquery.ui.domwindow.js':  [
@@ -46,6 +57,6 @@ module.exports = function(grunt){
     proc.exec("growlnotify -t 'grunt.js' -m '＼(^o^)／'");
   });
 
-  grunt.registerTask('default', 'coffee notifyOK');
+  grunt.registerTask('default', 'coffee concat notifyOK');
 
 };

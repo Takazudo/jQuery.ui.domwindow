@@ -1,3 +1,7 @@
+/*! jQuery.ui.domwindow - v0.0.0 -  3/27/2012
+ * https://github.com/Takazudo/jQuery.ui.domwindow
+ * Copyright (c) 2012 "Takazudo" Takeshi Takatsudo; Licensed MIT */
+
 (function() {
   var $dialog, $doc, $overlay, $win, DomwindowApi, doc, domwindowApi, genOverlayOptions, genUniqId, getInfoFromOpener, ie6, resolveSilently, round, scrollOffsetH, scrollOffsetW, viewportH, viewportW, wait, win,
     __slice = Array.prototype.slice;

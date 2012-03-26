@@ -1,0 +1,19 @@
+{
+  "name": "jQuery.ui.domwindow",
+  "description": "Just a simple dialog",
+  "version": "0.0.0",
+  "homepage": "https://github.com/Takazudo/jQuery.ui.domwindow",
+  "author": {
+    "name": "\"Takazudo\" Takeshi Takatsudo",
+    "url": "http://zudolab.net"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Takazudo/jQuery.ui.domwindow.git"
+  },
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ]
+}
