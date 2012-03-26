@@ -3,10 +3,9 @@ $win = $(window)
 # ============================================================
 # browser detection
 
-ie6 = (->
+ie6 = do ->
   $el = $('<div><!--[if IE 6]><i></i><![endif]--></div>')
   return if $el.find('i').size() then true else false
-)()
 
 # ============================================================
 # tiny utils
@@ -22,7 +21,7 @@ $.widget 'ui.hideoverlay',
   options:
     spinnersrc: null
     maxopacity: 0.8
-    bgiframe: true
+    bgiframe: false
   widgetEventPrefix: 'hideoverlay.'
 
   _active: false
@@ -39,7 +38,7 @@ $.widget 'ui.hideoverlay',
   _handleIE6: ->
     if not ie6 then return @
     @_resize()
-    if @options.bgiframe
+    if @options.bgiframe and $.fn.bgiframe
       @$el.bgiframe
         opacity: false
     @

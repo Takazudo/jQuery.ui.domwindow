@@ -23,7 +23,7 @@
     options: {
       spinnersrc: null,
       maxopacity: 0.8,
-      bgiframe: true
+      bgiframe: false
     },
     widgetEventPrefix: 'hideoverlay.',
     _active: false,
@@ -39,7 +39,7 @@
     _handleIE6: function() {
       if (!ie6) return this;
       this._resize();
-      if (this.options.bgiframe) {
+      if (this.options.bgiframe && $.fn.bgiframe) {
         this.$el.bgiframe({
           opacity: false
         });
