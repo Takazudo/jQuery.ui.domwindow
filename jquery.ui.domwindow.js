@@ -62,18 +62,32 @@
     options: {
       spinnersrc: null,
       maxopacity: 0.8,
-      bgiframe: false
+      bgiframe: false,
+      spinjs: true
     },
     widgetEventPrefix: 'hideoverlay.',
     _active: false,
     _create: function() {
       this.$el = this.element;
       this.$spinner = $('.ui-hideoverlay-spinner', this.$el);
+      if (this.options.spinjs) this.$spinner.css('background', 'none');
       this.$bg = $('.ui-hideoverlay-bg', this.$el);
       this._preloadSpinner();
       this._eventify();
       this._handleIE6();
       return this;
+    },
+    _attachSpinjs: function() {
+      var spinopts;
+      if (!this._showDefer) return this;
+      if (!this._spinning) return this;
+      spinopts = {
+        color: '#fff',
+        lines: 15,
+        length: 22,
+        radius: 40
+      };
+      return (new Spinner(spinopts)).spin(this.$spinner[0]);
     },
     _handleIE6: function() {
       if (!ie6) return this;
@@ -87,7 +101,7 @@
     },
     _resize: function() {
       if (!ie6) return this;
-      return this.$el.css({
+      return this.$el.add(this.$bg).css({
         width: $win.width(),
         height: $win.height(),
         top: $win.scrollTop(),
@@ -102,18 +116,23 @@
       });
       return this;
     },
-    _showOverlayEl: function() {
+    _showOverlayEl: function(woSpinner) {
       var _this = this;
       return $.Deferred(function(defer) {
         var animTo, cssTo;
+        if (_this.options.spinjs && !woSpinner) {
+          wait(0).done(function() {
+            return _this._attachSpinjs();
+          });
+        }
+        _this.$el.css('display', 'block');
         cssTo = {
-          opacity: 0,
-          display: 'block'
+          opacity: 0
         };
         animTo = {
           opacity: _this.options.maxopacity
         };
-        return ($.when(_this.$el.stop().css(cssTo).animate(animTo, 200))).done(function() {
+        return ($.when(_this.$bg.stop().css(cssTo).animate(animTo, 200))).done(function() {
           return defer.resolve();
         });
       }).promise();
@@ -125,7 +144,7 @@
         animTo = {
           opacity: 0
         };
-        return ($.when(_this.$el.stop().animate(animTo, 100))).done(function() {
+        return ($.when(_this.$bg.stop().animate(animTo, 100))).done(function() {
           _this.$el.css('display', 'none');
           _this.$spinner.show();
           return defer.resolve();
@@ -147,10 +166,11 @@
       if (woSpinner) {
         this.$spinner.hide();
       } else {
+        this._spinning = true;
         this.$spinner.show();
       }
       this._trigger('showstart');
-      this._showDefer = this._showOverlayEl();
+      this._showDefer = this._showOverlayEl(woSpinner);
       this._showDefer.done(function() {
         _this._showDefer = null;
         return _this._trigger('showend');
@@ -176,7 +196,8 @@
       return this._hideDefer;
     },
     hideSpinner: function() {
-      this.$spinner.hide();
+      this._spinning = false;
+      this.$spinner.empty().hide();
       return this;
     }
   });

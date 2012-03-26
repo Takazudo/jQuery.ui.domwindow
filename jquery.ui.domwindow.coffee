@@ -50,6 +50,7 @@ $.widget 'ui.hideoverlay',
     spinnersrc: null
     maxopacity: 0.8
     bgiframe: false
+    spinjs: true
   widgetEventPrefix: 'hideoverlay.'
 
   _active: false
@@ -57,11 +58,22 @@ $.widget 'ui.hideoverlay',
   _create: ->
     @$el = @element
     @$spinner = $('.ui-hideoverlay-spinner', @$el)
+    if @options.spinjs then @$spinner.css 'background', 'none'
     @$bg = $('.ui-hideoverlay-bg', @$el)
     @_preloadSpinner()
     @_eventify()
     @_handleIE6()
     @
+
+  _attachSpinjs: ->
+    if not @_showDefer then return @
+    if not @_spinning then return @
+    spinopts = 
+      color:'#fff'
+      lines: 15
+      length: 22
+      radius: 40
+    (new Spinner spinopts).spin(@$spinner[0])
 
   _handleIE6: ->
     if not ie6 then return @
@@ -73,7 +85,7 @@ $.widget 'ui.hideoverlay',
 
   _resize: ->
     if not ie6 then return @
-    @$el.css
+    @$el.add(@$bg).css
       width: $win.width()
       height: $win.height()
       top: $win.scrollTop()
@@ -84,17 +96,20 @@ $.widget 'ui.hideoverlay',
     $win.bind 'resize scroll', => @_resize()
     @
 
-  _showOverlayEl: ->
+  _showOverlayEl: (woSpinner) ->
     $.Deferred (defer) =>
-      cssTo = { opacity: 0, display: 'block' }
+      if @options.spinjs and not woSpinner
+        wait(0).done => @_attachSpinjs()
+      @$el.css 'display', 'block'
+      cssTo = { opacity: 0 }
       animTo = { opacity: @options.maxopacity }
-      ($.when @$el.stop().css(cssTo).animate(animTo, 200)).done =>
+      ($.when @$bg.stop().css(cssTo).animate(animTo, 200)).done =>
         defer.resolve()
     .promise()
   _hideOverlayEl: ->
     $.Deferred (defer) =>
       animTo = { opacity: 0 }
-      ($.when @$el.stop().animate(animTo, 100)).done =>
+      ($.when @$bg.stop().animate(animTo, 100)).done =>
         @$el.css 'display', 'none'
         @$spinner.show()
         defer.resolve()
@@ -113,9 +128,10 @@ $.widget 'ui.hideoverlay',
     if woSpinner
       @$spinner.hide()
     else
+      @_spinning = true
       @$spinner.show()
     @_trigger 'showstart'
-    @_showDefer = @_showOverlayEl()
+    @_showDefer = @_showOverlayEl(woSpinner)
     @_showDefer.done =>
       @_showDefer = null
       @_trigger 'showend'
@@ -135,7 +151,8 @@ $.widget 'ui.hideoverlay',
     @_hideDefer
 
   hideSpinner: ->
-    @$spinner.hide()
+    @_spinning = false
+    @$spinner.empty().hide()
     @
 
 $.ui.hideoverlay.create = ->
