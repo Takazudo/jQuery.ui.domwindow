@@ -164,7 +164,7 @@
       if (this._active) return resolveSilently();
       this._active = true;
       if (woSpinner) {
-        this.$spinner.hide();
+        this.hideSpinner();
       } else {
         this._spinning = true;
         this.$spinner.show();
@@ -256,9 +256,13 @@
       return this;
     },
     setOverlay: function($overlay) {
+      var _this = this;
       if (!this.options.overlay) return this;
       this.$overlay = $overlay;
       this.overlay = $overlay.data('hideoverlay');
+      this.$overlay.bind('click', function() {
+        return _this.close();
+      });
       return this;
     },
     center: function() {
@@ -294,51 +298,61 @@
       return this;
     },
     open: function(src, options) {
-      var o,
+      var complete, currentOpen, dialogType, o, _ref, _ref2, _ref3,
         _this = this;
       o = options;
-      return $.Deferred(function(defer) {
-        var complete, dialogType, _ref, _ref2, _ref3;
-        complete = function() {
-          _this.$el.fadeIn(200, function() {
-            var _ref;
-            if ((_ref = _this.overlay) != null) _ref.hideSpinner();
-            return _this._trigger('open');
-          });
-          wait(0).done(function() {
-            return _this.center();
-          });
-          return defer.resolve();
-        };
-        dialogType = null;
-        if (_this.options.ajaxdialog) dialogType = 'ajax';
-        if (_this.options.iframedialog) dialogType = 'iframe';
-        if (_this.options.iddialog) dialogType = 'id';
-        if (o != null ? o.ajaxdialog : void 0) dialogType = 'ajax';
-        if (o != null ? o.iframedialog : void 0) dialogType = 'iframe';
-        if (o != null ? o.iddialog : void 0) dialogType = 'id';
-        switch (dialogType) {
-          case 'ajax':
-            if ((_ref = _this.overlay) != null) _ref.show();
-            return (_this._ajaxGet(src)).done(function(data) {
-              _this.$el.empty().append(data);
-              return complete();
-            });
-          case 'iframe':
-            if ((_ref2 = _this.overlay) != null) _ref2.show();
-            _this.$el.empty().append(_this._createIframeSrc(src));
+      this._isOpen = true;
+      this._currentOpen = currentOpen = {};
+      currentOpen.defer = $.Deferred();
+      complete = function() {
+        if (currentOpen.killed) return;
+        _this.$el.fadeIn(200, function() {
+          var _ref;
+          if ((_ref = _this.overlay) != null) _ref.hideSpinner();
+          return _this._trigger('open');
+        });
+        wait(0).done(function() {
+          return _this.center();
+        });
+        return currentOpen.defer.resolve();
+      };
+      dialogType = null;
+      if (this.options.ajaxdialog) dialogType = 'ajax';
+      if (this.options.iframedialog) dialogType = 'iframe';
+      if (this.options.iddialog) dialogType = 'id';
+      if (o != null ? o.ajaxdialog : void 0) dialogType = 'ajax';
+      if (o != null ? o.iframedialog : void 0) dialogType = 'iframe';
+      if (o != null ? o.iddialog : void 0) dialogType = 'id';
+      switch (dialogType) {
+        case 'ajax':
+          if ((_ref = this.overlay) != null) _ref.show();
+          (this._ajaxGet(src)).done(function(data) {
+            _this.$el.empty().append(data);
             return complete();
-          case 'id':
-            if ((_ref3 = _this.overlay) != null) _ref3.show();
-            _this.$el.empty().append($('#' + src).html());
-            return complete();
-        }
-      }).promise();
+          });
+          break;
+        case 'iframe':
+          if ((_ref2 = this.overlay) != null) _ref2.show();
+          this.$el.empty().append(this._createIframeSrc(src));
+          complete();
+          break;
+        case 'id':
+          if ((_ref3 = this.overlay) != null) _ref3.show();
+          this.$el.empty().append($('#' + src).html());
+          complete();
+      }
+      currentOpen.kill = function() {
+        return currentOpen.killed = true;
+      };
+      return currentOpen;
     },
     close: function() {
-      var _ref,
+      var _ref, _ref2,
         _this = this;
-      if ((_ref = this.overlay) != null) _ref.hide();
+      if (!this._isOpen) return this;
+      if ((_ref = this._currentOpen) != null) _ref.kill();
+      this._isOpen = false;
+      if ((_ref2 = this.overlay) != null) _ref2.hide();
       this.$el.fadeOut(200, function() {
         return _this._trigger('close');
       });

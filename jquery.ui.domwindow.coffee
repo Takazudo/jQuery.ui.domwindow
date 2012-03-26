@@ -126,7 +126,7 @@ $.widget 'ui.hideoverlay',
     if @_active then return resolveSilently()
     @_active = true
     if woSpinner
-      @$spinner.hide()
+      @hideSpinner()
     else
       @_spinning = true
       @$spinner.show()
@@ -213,6 +213,7 @@ $.widget 'ui.domwindowdialog',
     if not @options.overlay then return @
     @$overlay = $overlay
     @overlay = $overlay.data 'hideoverlay'
+    @$overlay.bind 'click', => @close()
     @
 
   center: ->
@@ -253,42 +254,49 @@ $.widget 'ui.domwindowdialog',
   open: (src, options) ->
 
     o = options
+    @_isOpen = true
 
-    $.Deferred (defer) =>
+    @_currentOpen = currentOpen = {}
+    currentOpen.defer = $.Deferred()
 
-      complete = =>
-        @$el.fadeIn 200, =>
-          @overlay?.hideSpinner()
-          @_trigger 'open'
-        wait(0).done => @center()
-        defer.resolve()
+    complete = =>
+      if currentOpen.killed then return
+      @$el.fadeIn 200, =>
+        @overlay?.hideSpinner()
+        @_trigger 'open'
+      wait(0).done => @center()
+      currentOpen.defer.resolve()
 
-      dialogType = null
-      if @options.ajaxdialog then dialogType = 'ajax'
-      if @options.iframedialog then dialogType = 'iframe'
-      if @options.iddialog then dialogType = 'id'
-      if o?.ajaxdialog then dialogType = 'ajax'
-      if o?.iframedialog then dialogType = 'iframe'
-      if o?.iddialog then dialogType = 'id'
+    dialogType = null
+    if @options.ajaxdialog then dialogType = 'ajax'
+    if @options.iframedialog then dialogType = 'iframe'
+    if @options.iddialog then dialogType = 'id'
+    if o?.ajaxdialog then dialogType = 'ajax'
+    if o?.iframedialog then dialogType = 'iframe'
+    if o?.iddialog then dialogType = 'id'
 
-      switch dialogType
-        when 'ajax'
-          @overlay?.show()
-          (@_ajaxGet src).done (data) =>
-            @$el.empty().append data
-            complete()
-        when 'iframe'
-          @overlay?.show()
-          @$el.empty().append @_createIframeSrc(src)
+    switch dialogType
+      when 'ajax'
+        @overlay?.show()
+        (@_ajaxGet src).done (data) =>
+          @$el.empty().append data
           complete()
-        when 'id'
-          @overlay?.show()
-          @$el.empty().append $('#' + src).html()
-          complete()
+      when 'iframe'
+        @overlay?.show()
+        @$el.empty().append @_createIframeSrc(src)
+        complete()
+      when 'id'
+        @overlay?.show()
+        @$el.empty().append $('#' + src).html()
+        complete()
 
-    .promise()
+    currentOpen.kill = -> currentOpen.killed = true
+    currentOpen
 
   close: ->
+    if not @_isOpen then return @
+    @_currentOpen?.kill()
+    @_isOpen = false
     @overlay?.hide()
     @$el.fadeOut 200, => @_trigger 'close'
     @
