@@ -12,8 +12,6 @@ Just a simple ajax/iframe dialog.
 * [bgiframe](http://takazudo.github.com/example-bgiframe/)
 * [spinjs](http://takazudo.github.com/example-spinjs/)
 
-not yet
-
 ## Usage
 
 See demos

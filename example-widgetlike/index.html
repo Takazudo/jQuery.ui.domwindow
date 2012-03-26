@@ -31,6 +31,13 @@ pre{
 <script src="../lib/jquery.ui.widget.js"></script>
 <script src="../jquery.ui.domwindow.js"></script>
 <script>
+if (!window.console){
+	window.console = {}
+	window.console.log = function(arg){
+		alert(arg);
+
+	};
+}
 $(function(){
 	$.ui.domwindowdialog.setup({
 		spinnersrc: '../spinner.gif' // specify this for preload

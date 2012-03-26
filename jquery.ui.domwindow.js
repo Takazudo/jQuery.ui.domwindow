@@ -96,12 +96,19 @@
       return this;
     },
     _resize: function() {
+      var h, w;
       if (!ie6) return this;
-      return this.$el.add(this.$bg).css({
-        width: $win.width(),
-        height: $win.height(),
+      w = $win.width();
+      h = $win.height();
+      this.$el.css({
+        width: w,
+        height: h,
         top: $win.scrollTop(),
         left: $win.scrollLeft()
+      });
+      return this.$bg.css({
+        width: w,
+        height: h
       });
     },
     _eventify: function() {

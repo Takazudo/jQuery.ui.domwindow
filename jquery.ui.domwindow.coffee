@@ -84,11 +84,16 @@ $.widget 'ui.hideoverlay',
 
   _resize: ->
     if not ie6 then return @
-    @$el.add(@$bg).css
-      width: $win.width()
-      height: $win.height()
+    w = $win.width()
+    h = $win.height()
+    @$el.css
+      width: w
+      height: h
       top: $win.scrollTop()
       left: $win.scrollLeft()
+    @$bg.css
+      width: w
+      height: h
 
   _eventify: ->
     if not ie6 then return @
