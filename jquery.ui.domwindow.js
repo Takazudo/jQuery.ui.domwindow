@@ -127,11 +127,7 @@
       var _this = this;
       return $.Deferred(function(defer) {
         var animTo, cssTo;
-        if (_this.options.spinjs && !woSpinner) {
-          wait(0).done(function() {
-            return _this._attachSpinjs();
-          });
-        }
+        _this.$spinner.hide();
         _this.$el.css('display', 'block');
         cssTo = {
           opacity: 0
@@ -140,6 +136,13 @@
           opacity: _this.options.maxopacity
         };
         return ($.when(_this.$bg.stop().css(cssTo).animate(animTo, 200))).done(function() {
+          if (!woSpinner) {
+            if (_this.options.spinjs) {
+              _this.$spinner.show();
+              _this._attachSpinjs();
+            }
+            _this.$spinner.hide().fadeIn();
+          }
           return defer.resolve();
         });
       }).promise();
@@ -204,7 +207,7 @@
     },
     hideSpinner: function() {
       this._spinning = false;
-      this.$spinner.empty().hide();
+      this.$spinner.stop().empty().hide();
       return this;
     }
   });

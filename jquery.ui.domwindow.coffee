@@ -102,12 +102,16 @@ $.widget 'ui.hideoverlay',
 
   _showOverlayEl: (woSpinner) ->
     $.Deferred (defer) =>
-      if @options.spinjs and not woSpinner
-        wait(0).done => @_attachSpinjs()
+      @$spinner.hide()
       @$el.css 'display', 'block'
       cssTo = { opacity: 0 }
       animTo = { opacity: @options.maxopacity }
       ($.when @$bg.stop().css(cssTo).animate(animTo, 200)).done =>
+        if not woSpinner
+          if @options.spinjs
+            @$spinner.show()
+            @_attachSpinjs()
+          @$spinner.hide().fadeIn()
         defer.resolve()
     .promise()
   _hideOverlayEl: ->
@@ -156,7 +160,7 @@ $.widget 'ui.hideoverlay',
 
   hideSpinner: ->
     @_spinning = false
-    @$spinner.empty().hide()
+    @$spinner.stop().empty().hide()
     @
 
 $.ui.hideoverlay.create = (options) ->
