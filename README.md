@@ -1,6 +1,6 @@
 # jQuery.ui.domwindow
 
-Just a simple ajax/iframe dialog.  
+Just a simple ajax/iframe/id-based fake dialog.  
 
 ## demos
 
