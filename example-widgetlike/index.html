@@ -48,68 +48,128 @@ $(function(){
 <body><div id="all">
 <h1><a href="https://github.com/Takazudo/jQuery.ui.domwindow">jQuery.ui.domwindow</a> - demo - widgetlike</h1>
 
-<h2>widgetlike</h2>
+<h2>widgetlike - minimal</h2>
 <p>Dialogs can be handled like <a href="http://jqueryui.com/demos/dialog/">jQuery.ui.dialog</a></p>
-<button id="widgetlike-open">open</button>
+<button id="widgetlike1-open">open</button>
 <script>
 $(function(){
-	var $dialog = $('#iddialogcontent').domwindow({
-		width: 700,
-		height: 600,
-		open: function(event, data){
-			console.log('opened1!', data.dialog);
-		},
-		close: function(){
-			console.log('closed1!');
-		}
-	});
-	$dialog.bind('domwindow.open', function(e, data){
-		console.log('opened2!', data.dialog);
-	});
-	$dialog.bind('domwindow.close', function(){
-		console.log('closed2!');
-	});
-	$('#widgetlike-open').click(function(){
-		$dialog.domwindow('open');
-	});
-	$(document).on('click', '.widgetlike-close', function(){
-		$dialog.domwindow('close');
+	var $domwin = $('#iddialogcontent1').domwindow();
+	$('#widgetlike1-open').click(function(){
+		$domwin.domwindow('open');
 	});
 });
 </script>
 <pre>$(function(){
-    var $dialog = $('#iddialogcontent').domwindow({
-        width: 700,
-        height: 600,
-        open: function(event, data){
-            console.log('opened1!', data.dialog);
-        },
-        close: function(){
-            console.log('closed1!');
-        }
-    });
-    $dialog.bind('domwindow.open', function(e, data){
-        console.log('opened2!', data.dialog);
-    });
-    $dialog.bind('domwindow.close', function(){
-        console.log('closed2!');
-    });
-    $('#widgetlike-open').click(function(){
-        $dialog.domwindow('open');
-    });
-    $(document).on('click', '.widgetlike-close', function(){
-        $dialog.domwindow('close');
+    var $domwin = $('#iddialogcontent1').domwindow();
+    $('#widgetlike1-open').click(function(){
+        $domwin.domwindow('open');
     });
 });</pre>
 
+<h2>widgetlike - events</h2>
+<p>You can bind events like below.</p>
+<button id="widgetlike2-open">open</button>
+<script>
+$(function(){
 
+	var $domwin = $('#iddialogcontent2').domwindow({
+		width: 700,
+		height: 600,
+		beforeopen: function(e, data){
+			console.log('option beforeopen!', data.dialog);
+		},
+		afteropen: function(e, data){
+			console.log('option afteropen!', data.dialog);
+			// bind close to buttons in dialog
+			$('.widgetlike2-close', data.dialog).click(function(){
+				$domwin.domwindow('close');
+			});
+		},
+		beforeclose: function(e, data){
+			console.log('option beforeclose!', data.dialog);
+		},
+		afterclose: function(e, data){
+			console.log('option afterclose!', data.dialog);
+		}
+	});
 
-<div id="iddialogcontent">
+	// directly binded events
+	$domwin.on('domwindow.beforeopen', function(e, data){
+		console.log('on beforeopen!', data.dialog);
+	});
+	$domwin.on('domwindow.afteropen', function(e, data){
+		console.log('on afteropen!', data.dialog);
+	});
+	$domwin.on('domwindow.beforeclose', function(e, data){
+		console.log('on beforeclose!', data.dialog);
+	});
+	$domwin.on('domwindow.afterclose', function(e, data){
+		console.log('on afterclose!', data.dialog);
+	});
+
+	// open dialog like below
+	$('#widgetlike2-open').click(function(){
+		$domwin.domwindow('open');
+	});
+
+});
+</script>
+<pre>$(function(){
+
+    var $domwin = $('#iddialogcontent2').domwindow({
+        width: 700,
+        height: 600,
+        beforeopen: function(e, data){
+            console.log('option beforeopen!', data.dialog);
+        },
+        afteropen: function(e, data){
+            console.log('option afteropen!', data.dialog);
+            // bind close to buttons in dialog
+            $('.widgetlike2-close', data.dialog).click(function(){
+                $domwin.domwindow('close');
+            });
+        },
+        beforeclose: function(e, data){
+            console.log('option beforeclose!', data.dialog);
+        },
+        afterclose: function(e, data){
+            console.log('option afterclose!', data.dialog);
+        }
+    });
+
+    // directly binded events
+    $domwin.on('domwindow.beforeopen', function(e, data){
+        console.log('on beforeopen!', data.dialog);
+    });
+    $domwin.on('domwindow.afteropen', function(e, data){
+        console.log('on afteropen!', data.dialog);
+    });
+    $domwin.on('domwindow.beforeclose', function(e, data){
+        console.log('on beforeclose!', data.dialog);
+    });
+    $domwin.on('domwindow.afterclose', function(e, data){
+        console.log('on afterclose!', data.dialog);
+    });
+
+    // open dialog like below
+    $('#widgetlike2-open').click(function(){
+        $domwin.domwindow('open');
+    });
+
+});</pre>
+
+<script type="text/x-dialogsrc" id="iddialogcontent1">
 	<div style="padding:30px">
 		<h2>iddialog example</h2>
-		<button class="widgetlike-close">close</button>
+		<button class="apply-domwindow-close">close</button>
 	</div>
-</div>
+</script>
+<script type="text/x-dialogsrc" id="iddialogcontent2">
+	<div style="padding:30px">
+		<h2>iddialog example</h2>
+		<button class="widgetlike2-close">close</button>
+	</div>
+</script>
 
 </div></body>
 </html>

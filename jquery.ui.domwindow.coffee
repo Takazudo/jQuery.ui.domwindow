@@ -47,6 +47,7 @@ wait = (time) ->
 $.widget 'ui.hideoverlay',
 
   options:
+    overlayfade: true
     spinnersrc: null
     maxopacity: 0.8
     bgiframe: false
@@ -106,21 +107,35 @@ $.widget 'ui.hideoverlay',
       @$el.css 'display', 'block'
       cssTo = { opacity: 0 }
       animTo = { opacity: @options.maxopacity }
-      ($.when @$bg.stop().css(cssTo).animate(animTo, 200)).done =>
+      if @options.overlayfade
+        ($.when @$bg.stop().css(cssTo).animate(animTo, 200)).done =>
+          if not woSpinner
+            if @options.spinjs
+              @$spinner.show()
+              @_attachSpinjs()
+            @$spinner.hide().fadeIn()
+          defer.resolve()
+      else
+        @$bg.css(animTo)
         if not woSpinner
           if @options.spinjs
             @$spinner.show()
             @_attachSpinjs()
-          @$spinner.hide().fadeIn()
         defer.resolve()
     .promise()
+
   _hideOverlayEl: ->
     $.Deferred (defer) =>
       animTo = { opacity: 0 }
-      ($.when @$bg.stop().animate(animTo, 100)).done =>
+      done = =>
         @$el.css 'display', 'none'
         @$spinner.show()
         defer.resolve()
+      if @options.overlayfade
+        ($.when @$bg.stop().animate(animTo, 100)).done => done()
+      else
+        @$bg.css(animTo)
+        done()
     .promise()
 
   _preloadSpinner: ->
@@ -197,6 +212,7 @@ $.widget 'ui.domwindowdialog',
     iframedialog: false
     iddialog: false
     overlay: true
+    overlayclickclose: true
   widgetEventPrefix: 'domwindowdialog.'
 
   _create: ->
@@ -224,7 +240,8 @@ $.widget 'ui.domwindowdialog',
     if not @options.overlay then return @
     @$overlay = $overlay
     @overlay = $overlay.data 'hideoverlay'
-    @$overlay.bind 'click', => @close()
+    if @options.overlayclickclose
+      @$overlay.bind 'click', => @close()
     @
 
   center: ->
@@ -274,8 +291,9 @@ $.widget 'ui.domwindowdialog',
       if currentOpen.killed then return
       @$el.fadeIn 200, =>
         @overlay?.hideSpinner()
-        @_trigger 'open'
+        @_trigger 'afteropen', {}, { dialog: @$el }
         if options?.callback then options.callback.apply @$el, [@$el]
+        @_currentOpen = null
       wait(0).done => @center()
       currentOpen.defer.resolve()
 
@@ -287,11 +305,22 @@ $.widget 'ui.domwindowdialog',
     if o?.iframedialog then dialogType = 'iframe'
     if o?.iddialog then dialogType = 'id'
 
+    # if domwindow widget was attached to the target,
+    # invoke its events when the dialog was opened or closed.
+    if (dialogType is 'id')
+      $target = $('#' + src)
+      if $target.is(':ui-domwindow')
+        o = $.extend {}, $target.domwindow('createApiOpenOptions'), o
+
+    @_attachOneTimeEvents o, 'open', currentOpen
+
     w = o.width or @options.width
     h = o.height or @options.height
     @$el.css
       width: w
       height: h
+
+    @_trigger 'beforeopen', {}, { dialog: @$el }
 
     switch dialogType
       when 'ajax'
@@ -307,21 +336,36 @@ $.widget 'ui.domwindowdialog',
         complete()
       when 'id'
         @overlay?.show(true)
-        @$el.empty().append $('#' + src).html()
+        @$el.empty().append $target.html()
         complete()
 
     currentOpen.kill = -> currentOpen.killed = true
     currentOpen
 
-  close: ->
+  close: (options) ->
     $.Deferred (defer) =>
       if not @_isOpen then return @
+      @_attachOneTimeEvents options, 'close'
       @_currentOpen?.kill()
       @_isOpen = false
-      @overlay?.hide()
-      @$el.fadeOut 200, =>
-        defer.resolve()
-        @_trigger 'close'
+      @_trigger 'beforeclose', {}, { dialog: @$el }
+      wait(0).done =>
+        @overlay?.hide()
+        @$el.fadeOut 200, =>
+          defer.resolve()
+          @_trigger 'afterclose', {}, { dialog: @$el }
+
+  _attachOneTimeEvents: (localOptions, command, currentOpen) ->
+    if not localOptions then return @
+    events = ['beforeclose', 'afterclose']
+    if command is 'open'
+      $.merge events, ['beforeopen', 'afteropen']
+    $.each events, (i, ev) =>
+      if localOptions[ev]
+        @$el.one "#{@widgetEventPrefix}#{ev}", (args...) ->
+          if currentOpen?.killed then return
+          localOptions[ev].apply @$el, args
+    @
 
   _ajaxGet: (url) ->
     options =
@@ -343,7 +387,6 @@ $.widget 'ui.domwindowdialog',
 $.ui.domwindowdialog.create = (options) ->
   src = """
     <div class="ui-domwindowdialog">
-      hoge
       <a href="#" class="apply-domwindow-close">close</a>
     </div>
   """
@@ -386,8 +429,12 @@ getInfoFromOpener = (el) ->
   if $el.data('domwindowAjaxdialog') then o.ajaxdialog = true
   if $el.data('domwindowIframedialog') then o.iframedialog = true
   if $el.data('domwindowIddialog') then o.iddialog = true
-  o.height = $el.data('domwindowHeight') or null
-  o.width = $el.data('domwindowWidth') or null
+  do ->
+    h = $el.data('domwindowHeight')
+    if h then o.height = h
+  do ->
+    w = $el.data('domwindowWidth')
+    if w then o.width = w
 
   ret.push o
   ret
@@ -422,11 +469,29 @@ $.widget 'ui.domwindow',
       @$el.attr 'id', id
       id
     @
+  createApiOpenOptions: ->
+    self = @
+    o = $.extend {}, @options
+    delete o.beforeopen
+    delete o.afteropen
+    delete o.beforeclose
+    delete o.afterclose
+    $.extend o,
+      beforeopen: (e, data) -> self._trigger 'beforeopen', e, data
+      afteropen: (e, data) -> self._trigger 'afteropen', e, data
+      beforeclose: (e, data) -> self._trigger 'beforeclose', e, data
+      afterclose: (e, data) -> self._trigger 'afterclose', e, data
+  createApiCloseOptions: ->
+    self = @
+    o = {}
+    delete o.beforeclose
+    delete o.afterclose
+    $.extend o,
+      beforeclose: (e, data) -> self._trigger 'beforeclose', e, data
+      afterclose: (e, data) -> self._trigger 'afterclose', e, data
   open: ->
-    (domwindowApi.open @_id, @options).defer.done =>
-      @_trigger 'open', {}, { dialog: $dialog }
+    domwindowApi.open @_id, @createApiOpenOptions()
   close: ->
-    domwindowApi.close().done =>
-      @_trigger 'close'
+    domwindowApi.close @createApiCloseOptions()
 
 

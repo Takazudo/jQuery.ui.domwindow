@@ -64,6 +64,7 @@
 
   $.widget('ui.hideoverlay', {
     options: {
+      overlayfade: true,
       spinnersrc: null,
       maxopacity: 0.8,
       bgiframe: false,
@@ -135,30 +136,49 @@
         animTo = {
           opacity: _this.options.maxopacity
         };
-        return ($.when(_this.$bg.stop().css(cssTo).animate(animTo, 200))).done(function() {
+        if (_this.options.overlayfade) {
+          return ($.when(_this.$bg.stop().css(cssTo).animate(animTo, 200))).done(function() {
+            if (!woSpinner) {
+              if (_this.options.spinjs) {
+                _this.$spinner.show();
+                _this._attachSpinjs();
+              }
+              _this.$spinner.hide().fadeIn();
+            }
+            return defer.resolve();
+          });
+        } else {
+          _this.$bg.css(animTo);
           if (!woSpinner) {
             if (_this.options.spinjs) {
               _this.$spinner.show();
               _this._attachSpinjs();
             }
-            _this.$spinner.hide().fadeIn();
           }
           return defer.resolve();
-        });
+        }
       }).promise();
     },
     _hideOverlayEl: function() {
       var _this = this;
       return $.Deferred(function(defer) {
-        var animTo;
+        var animTo, done;
         animTo = {
           opacity: 0
         };
-        return ($.when(_this.$bg.stop().animate(animTo, 100))).done(function() {
+        done = function() {
           _this.$el.css('display', 'none');
           _this.$spinner.show();
           return defer.resolve();
-        });
+        };
+        if (_this.options.overlayfade) {
+          return ($.when(_this.$bg.stop().animate(animTo, 100))).done(function() {
+            return done();
+          });
+        } else {
+          _this.$bg.css(animTo);
+          return done();
+        }
       }).promise();
     },
     _preloadSpinner: function() {
@@ -237,7 +257,8 @@
       ajaxdialog_mindelay: 300,
       iframedialog: false,
       iddialog: false,
-      overlay: true
+      overlay: true,
+      overlayclickclose: true
     },
     widgetEventPrefix: 'domwindowdialog.',
     _create: function() {
@@ -273,9 +294,11 @@
       if (!this.options.overlay) return this;
       this.$overlay = $overlay;
       this.overlay = $overlay.data('hideoverlay');
-      this.$overlay.bind('click', function() {
-        return _this.close();
-      });
+      if (this.options.overlayclickclose) {
+        this.$overlay.bind('click', function() {
+          return _this.close();
+        });
+      }
       return this;
     },
     center: function() {
@@ -311,7 +334,7 @@
       return this;
     },
     open: function(src, options) {
-      var complete, currentOpen, delay, dialogType, h, o, w, _ref, _ref2, _ref3,
+      var $target, complete, currentOpen, delay, dialogType, h, o, w, _ref, _ref2, _ref3,
         _this = this;
       o = options;
       this._isOpen = true;
@@ -322,10 +345,13 @@
         _this.$el.fadeIn(200, function() {
           var _ref;
           if ((_ref = _this.overlay) != null) _ref.hideSpinner();
-          _this._trigger('open');
+          _this._trigger('afteropen', {}, {
+            dialog: _this.$el
+          });
           if (options != null ? options.callback : void 0) {
-            return options.callback.apply(_this.$el, [_this.$el]);
+            options.callback.apply(_this.$el, [_this.$el]);
           }
+          return _this._currentOpen = null;
         });
         wait(0).done(function() {
           return _this.center();
@@ -339,11 +365,21 @@
       if (o != null ? o.ajaxdialog : void 0) dialogType = 'ajax';
       if (o != null ? o.iframedialog : void 0) dialogType = 'iframe';
       if (o != null ? o.iddialog : void 0) dialogType = 'id';
+      if (dialogType === 'id') {
+        $target = $('#' + src);
+        if ($target.is(':ui-domwindow')) {
+          o = $.extend({}, $target.domwindow('createApiOpenOptions'), o);
+        }
+      }
+      this._attachOneTimeEvents(o, 'open', currentOpen);
       w = o.width || this.options.width;
       h = o.height || this.options.height;
       this.$el.css({
         width: w,
         height: h
+      });
+      this._trigger('beforeopen', {}, {
+        dialog: this.$el
       });
       switch (dialogType) {
         case 'ajax':
@@ -364,7 +400,7 @@
           break;
         case 'id':
           if ((_ref3 = this.overlay) != null) _ref3.show(true);
-          this.$el.empty().append($('#' + src).html());
+          this.$el.empty().append($target.html());
           complete();
       }
       currentOpen.kill = function() {
@@ -372,19 +408,46 @@
       };
       return currentOpen;
     },
-    close: function() {
+    close: function(options) {
       var _this = this;
       return $.Deferred(function(defer) {
-        var _ref, _ref2;
+        var _ref;
         if (!_this._isOpen) return _this;
+        _this._attachOneTimeEvents(options, 'close');
         if ((_ref = _this._currentOpen) != null) _ref.kill();
         _this._isOpen = false;
-        if ((_ref2 = _this.overlay) != null) _ref2.hide();
-        return _this.$el.fadeOut(200, function() {
-          defer.resolve();
-          return _this._trigger('close');
+        _this._trigger('beforeclose', {}, {
+          dialog: _this.$el
+        });
+        return wait(0).done(function() {
+          var _ref2;
+          if ((_ref2 = _this.overlay) != null) _ref2.hide();
+          return _this.$el.fadeOut(200, function() {
+            defer.resolve();
+            return _this._trigger('afterclose', {}, {
+              dialog: _this.$el
+            });
+          });
         });
       });
+    },
+    _attachOneTimeEvents: function(localOptions, command, currentOpen) {
+      var events,
+        _this = this;
+      if (!localOptions) return this;
+      events = ['beforeclose', 'afterclose'];
+      if (command === 'open') $.merge(events, ['beforeopen', 'afteropen']);
+      $.each(events, function(i, ev) {
+        if (localOptions[ev]) {
+          return _this.$el.one("" + _this.widgetEventPrefix + ev, function() {
+            var args;
+            args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+            if (currentOpen != null ? currentOpen.killed : void 0) return;
+            return localOptions[ev].apply(this.$el, args);
+          });
+        }
+      });
+      return this;
     },
     _ajaxGet: function(url) {
       var options;
@@ -404,7 +467,7 @@
 
   $.ui.domwindowdialog.create = function(options) {
     var src;
-    src = "<div class=\"ui-domwindowdialog\">\n  hoge\n  <a href=\"#\" class=\"apply-domwindow-close\">close</a>\n</div>";
+    src = "<div class=\"ui-domwindowdialog\">\n  <a href=\"#\" class=\"apply-domwindow-close\">close</a>\n</div>";
     return $(src).domwindowdialog(options);
   };
 
@@ -440,8 +503,16 @@
     if ($el.data('domwindowAjaxdialog')) o.ajaxdialog = true;
     if ($el.data('domwindowIframedialog')) o.iframedialog = true;
     if ($el.data('domwindowIddialog')) o.iddialog = true;
-    o.height = $el.data('domwindowHeight') || null;
-    o.width = $el.data('domwindowWidth') || null;
+    (function() {
+      var h;
+      h = $el.data('domwindowHeight');
+      if (h) return o.height = h;
+    })();
+    (function() {
+      var w;
+      w = $el.data('domwindowWidth');
+      if (w) return o.width = w;
+    })();
     ret.push(o);
     return ret;
   };
@@ -490,19 +561,49 @@
       })();
       return this;
     },
-    open: function() {
-      var _this = this;
-      return (domwindowApi.open(this._id, this.options)).defer.done(function() {
-        return _this._trigger('open', {}, {
-          dialog: $dialog
-        });
+    createApiOpenOptions: function() {
+      var o, self;
+      self = this;
+      o = $.extend({}, this.options);
+      delete o.beforeopen;
+      delete o.afteropen;
+      delete o.beforeclose;
+      delete o.afterclose;
+      return $.extend(o, {
+        beforeopen: function(e, data) {
+          return self._trigger('beforeopen', e, data);
+        },
+        afteropen: function(e, data) {
+          return self._trigger('afteropen', e, data);
+        },
+        beforeclose: function(e, data) {
+          return self._trigger('beforeclose', e, data);
+        },
+        afterclose: function(e, data) {
+          return self._trigger('afterclose', e, data);
+        }
       });
     },
-    close: function() {
-      var _this = this;
-      return domwindowApi.close().done(function() {
-        return _this._trigger('close');
+    createApiCloseOptions: function() {
+      var o, self;
+      self = this;
+      o = {};
+      delete o.beforeclose;
+      delete o.afterclose;
+      return $.extend(o, {
+        beforeclose: function(e, data) {
+          return self._trigger('beforeclose', e, data);
+        },
+        afterclose: function(e, data) {
+          return self._trigger('afterclose', e, data);
+        }
       });
+    },
+    open: function() {
+      return domwindowApi.open(this._id, this.createApiOpenOptions());
+    },
+    close: function() {
+      return domwindowApi.close(this.createApiCloseOptions());
     }
   });
 

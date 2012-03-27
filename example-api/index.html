@@ -58,8 +58,17 @@ $(function(){
 			ajaxdialog: true,
 			width: 400,
 			height: 600,
-			callback: function($dialog){
-				console.log('opend!', $dialog);
+			beforeopen: function(e, data){
+				console.log('beforeopen!', data.dialog);
+			},
+			afteropen: function(e, data){
+				console.log('afteropen!', data.dialog);
+			},
+			beforeclose: function(e, data){
+				console.log('beforeclose!', data.dialog);
+			},
+			afterclose: function(e, data){
+				console.log('afterclose!', data.dialog);
 			}
 		});
 	});
@@ -71,8 +80,17 @@ $(function(){
             ajaxdialog: true,
             width: 400,
             height: 600,
-            callback: function($dialog){
-                console.log('opend!', $dialog);
+            beforeopen: function(e, data){
+                console.log('beforeopen!', data.dialog);
+            },
+            afteropen: function(e, data){
+                console.log('afteropen!', data.dialog);
+            },
+            beforeclose: function(e, data){
+                console.log('beforeclose!', data.dialog);
+            },
+            afterclose: function(e, data){
+                console.log('afterclose!', data.dialog);
             }
         });
     });
@@ -87,8 +105,17 @@ $(function(){
 			iframedialog: true,
 			width: 600,
 			height: 200,
-			callback: function($dialog){
-				console.log('opend!', $dialog);
+			beforeopen: function(e, data){
+				console.log('beforeopen!', data.dialog);
+			},
+			afteropen: function(e, data){
+				console.log('afteropen!', data.dialog);
+			},
+			beforeclose: function(e, data){
+				console.log('beforeclose!', data.dialog);
+			},
+			afterclose: function(e, data){
+				console.log('afterclose!', data.dialog);
 			}
 		});
 	});
@@ -100,8 +127,17 @@ $(function(){
             iframedialog: true,
             width: 600,
             height: 200,
-            callback: function($dialog){
-                console.log('opend!', $dialog);
+            beforeopen: function(e, data){
+                console.log('beforeopen!', data.dialog);
+            },
+            afteropen: function(e, data){
+                console.log('afteropen!', data.dialog);
+            },
+            beforeclose: function(e, data){
+                console.log('beforeclose!', data.dialog);
+            },
+            afterclose: function(e, data){
+                console.log('afterclose!', data.dialog);
             }
         });
     });
@@ -116,8 +152,17 @@ $(function(){
 			iddialog: true,
 			width: 800,
 			height: 800,
-			callback: function($dialog){
-				console.log('opend!', $dialog);
+			beforeopen: function(e, data){
+				console.log('beforeopen!', data.dialog);
+			},
+			afteropen: function(e, data){
+				console.log('afteropen!', data.dialog);
+			},
+			beforeclose: function(e, data){
+				console.log('beforeclose!', data.dialog);
+			},
+			afterclose: function(e, data){
+				console.log('afterclose!', data.dialog);
 			}
 		});
 	});
@@ -129,19 +174,28 @@ $(function(){
             iddialog: true,
             width: 800,
             height: 800,
-            callback: function($dialog){
-                console.log('opend!', $dialog);
+            beforeopen: function(e, data){
+                console.log('beforeopen!', data.dialog);
+            },
+            afteropen: function(e, data){
+                console.log('afteropen!', data.dialog);
+            },
+            beforeclose: function(e, data){
+                console.log('beforeclose!', data.dialog);
+            },
+            afterclose: function(e, data){
+                console.log('afterclose!', data.dialog);
             }
         });
     });
 });</pre>
 
-<div id="iddialogcontent">
+<script type="text/x-dialogsrc" id="iddialogcontent">
 	<div style="padding:30px">
 		<h2>iddialog example</h2>
 		<p><a class="apply-domwindow-close" href="#">close</a></p>
 	</div>
-</div>
+</script>
 
 </div></body>
 </html>
