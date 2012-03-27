@@ -1,5 +1,3 @@
-Note: not well tested yet.
-
 # jQuery.ui.domwindow
 
 Just a simple ajax/iframe dialog.  
@@ -10,6 +8,7 @@ Just a simple ajax/iframe dialog.
 * [api](http://takazudo.github.com/jQuery.ui.domwindow/example-api/)
 * [options](http://takazudo.github.com/jQuery.ui.domwindow/example-options/)
 * [widgetlike](http://takazudo.github.com/jQuery.ui.domwindow/example-widgetlike/)
+* [deferredopen](http://takazudo.github.com/jQuery.ui.domwindow/example-deferredopen/)
 * [bgiframe](http://takazudo.github.com/jQuery.ui.domwindow/example-bgiframe/)
 * [spinjs](http://takazudo.github.com/jQuery.ui.domwindow/example-spinjs/)
 
