@@ -8,6 +8,7 @@ Just a simple ajax/iframe dialog.
 
 * [basic](http://takazudo.github.com/jQuery.ui.domwindow/example-basic/)
 * [api](http://takazudo.github.com/jQuery.ui.domwindow/example-api/)
+* [options](http://takazudo.github.com/jQuery.ui.domwindow/example-options/)
 * [widgetlike](http://takazudo.github.com/jQuery.ui.domwindow/example-widgetlike/)
 * [bgiframe](http://takazudo.github.com/jQuery.ui.domwindow/example-bgiframe/)
 * [spinjs](http://takazudo.github.com/jQuery.ui.domwindow/example-spinjs/)
