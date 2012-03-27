@@ -302,7 +302,6 @@ $.widget 'ui.domwindowdialog',
       @$el.fadeIn 200, =>
         @overlay?.hideSpinner()
         @_trigger 'afteropen', {}, { dialog: @$el }
-        if options?.callback then options.callback.apply @$el, [@$el]
         @_currentOpen = null
       wait(0).done => @center()
       currentOpen.defer.resolve()
@@ -503,11 +502,11 @@ $.widget 'ui.domwindow',
     $.extend o,
       beforeopen: (e, data) -> self._trigger 'beforeopen', e, data
       afteropen: (e, data) -> self._trigger 'afteropen', e, data
-      beforeclose: (e, data) -> self._trigger 'beforeclose', e, data
-      afterclose: (e, data) -> self._trigger 'afterclose', e, data
   createApiCloseOptions: ->
     self = @
     o = {}
+    delete o.beforeopen
+    delete o.afteropen
     delete o.beforeclose
     delete o.afterclose
     $.extend o,
