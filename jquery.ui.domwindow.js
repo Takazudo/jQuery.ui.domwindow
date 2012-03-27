@@ -572,7 +572,6 @@
     _create: function() {
       var _this = this;
       this.$el = this.element;
-      $.ui.domwindowdialog.setup();
       this._id = this.$el.attr('id') || (function() {
         var id;
         id = genUniqId();

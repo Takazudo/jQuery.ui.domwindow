@@ -486,7 +486,6 @@ $.widget 'ui.domwindow',
   widgetEventPrefix: 'domwindow.'
   _create: ->
     @$el = @element
-    $.ui.domwindowdialog.setup()
     @_id = @$el.attr('id') or do =>
       id = genUniqId()
       @$el.attr 'id', id
