@@ -4,10 +4,16 @@ $win = $(win)
 $doc = $(doc)
 round = Math.round
 
-$dialog = null
-$overlay = null
+# share dialog and overlay in this plugin
+
+widgets =
+  $dialog: null
+  $overlay: null
+
+# only this can be accessed from outside
 
 win.domwindowApi = domwindowApi = null
+
 
 # ============================================================
 # browser detection
@@ -188,8 +194,9 @@ $.ui.hideoverlay.create = (options) ->
   $(src).hideoverlay(options)
 
 $.ui.hideoverlay.setup = (options) ->
-  if $overlay then return $overlay
+  if widgets.$overlay then return widgets.$overlay
   $overlay = $.ui.hideoverlay.create(options).appendTo 'body'
+  widgets.$overlay = $overlay
   $overlay
 
 
@@ -393,12 +400,13 @@ $.ui.domwindowdialog.create = (options) ->
   $(src).domwindowdialog(options)
 
 $.ui.domwindowdialog.setup = (options) ->
-  if $dialog then return $dialog
+  if widgets.$dialog then return widgets.$dialog
   $dialog = $.ui.domwindowdialog.create options
   $dialog.appendTo 'body'
   overlayOptions = genOverlayOptions(options)
   $dialog.domwindowdialog 'setOverlay', $.ui.hideoverlay.setup(overlayOptions)
   domwindowApi = win.domwindowApi = new DomwindowApi $dialog
+  widgets.$dialog = $dialog
   $dialog
 
 

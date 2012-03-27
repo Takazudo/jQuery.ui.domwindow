@@ -3,7 +3,7 @@
  * Copyright (c) 2012 "Takazudo" Takeshi Takatsudo; Licensed MIT */
 
 (function() {
-  var $dialog, $doc, $overlay, $win, DomwindowApi, doc, domwindowApi, genOverlayOptions, genUniqId, getInfoFromOpener, ie6, resolveSilently, round, scrollOffsetH, scrollOffsetW, viewportH, viewportW, wait, win,
+  var $doc, $win, DomwindowApi, doc, domwindowApi, genOverlayOptions, genUniqId, getInfoFromOpener, ie6, resolveSilently, round, scrollOffsetH, scrollOffsetW, viewportH, viewportW, wait, widgets, win,
     __slice = Array.prototype.slice;
 
   win = window;
@@ -16,9 +16,10 @@
 
   round = Math.round;
 
-  $dialog = null;
-
-  $overlay = null;
+  widgets = {
+    $dialog: null,
+    $overlay: null
+  };
 
   win.domwindowApi = domwindowApi = null;
 
@@ -239,8 +240,10 @@
   };
 
   $.ui.hideoverlay.setup = function(options) {
-    if ($overlay) return $overlay;
+    var $overlay;
+    if (widgets.$overlay) return widgets.$overlay;
     $overlay = $.ui.hideoverlay.create(options).appendTo('body');
+    widgets.$overlay = $overlay;
     return $overlay;
   };
 
@@ -472,13 +475,14 @@
   };
 
   $.ui.domwindowdialog.setup = function(options) {
-    var overlayOptions;
-    if ($dialog) return $dialog;
+    var $dialog, overlayOptions;
+    if (widgets.$dialog) return widgets.$dialog;
     $dialog = $.ui.domwindowdialog.create(options);
     $dialog.appendTo('body');
     overlayOptions = genOverlayOptions(options);
     $dialog.domwindowdialog('setOverlay', $.ui.hideoverlay.setup(overlayOptions));
     domwindowApi = win.domwindowApi = new DomwindowApi($dialog);
+    widgets.$dialog = $dialog;
     return $dialog;
   };
 
