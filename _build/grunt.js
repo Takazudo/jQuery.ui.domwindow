@@ -33,7 +33,21 @@ module.exports = function(grunt){
       '../jquery.ui.domwindow.js':  [
         '../jquery.ui.domwindow.coffee'
       ]
+    },
+    min: {
+      '../jquery.ui.domwindow.min.js': '../jquery.ui.domwindow.js'
     }
+  });
+
+  grunt.registerMultiTask('min', 'minify', function() {
+    var done = this.async();
+    var src = this.file.src;
+    var dest = this.file.dest;
+    var command = 'uglifyjs -o ' + dest + ' ' + src;
+    var out = proc.exec(command, function(err, sout, serr){
+      log.writeln('uglified.');
+      done(true);
+    });
   });
 
   grunt.registerMultiTask('coffee', 'compile CoffeeScripts', function() {
