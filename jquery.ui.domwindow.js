@@ -354,9 +354,6 @@
           _this._trigger('afteropen', {}, {
             dialog: _this.$el
           });
-          if (options != null ? options.callback : void 0) {
-            options.callback.apply(_this.$el, [_this.$el]);
-          }
           return _this._currentOpen = null;
         });
         wait(0).done(function() {
@@ -598,12 +595,6 @@
         },
         afteropen: function(e, data) {
           return self._trigger('afteropen', e, data);
-        },
-        beforeclose: function(e, data) {
-          return self._trigger('beforeclose', e, data);
-        },
-        afterclose: function(e, data) {
-          return self._trigger('afterclose', e, data);
         }
       });
     },
@@ -611,6 +602,8 @@
       var o, self;
       self = this;
       o = {};
+      delete o.beforeopen;
+      delete o.afteropen;
       delete o.beforeclose;
       delete o.afterclose;
       return $.extend(o, {
