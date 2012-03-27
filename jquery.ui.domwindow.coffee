@@ -58,6 +58,11 @@ $.widget 'ui.hideoverlay',
     maxopacity: 0.8
     bgiframe: false
     spinjs: false
+    spinjs_options:
+      color:'#fff'
+      lines: 15
+      length: 22
+      radius: 40
   widgetEventPrefix: 'hideoverlay.'
 
   _active: false
@@ -75,12 +80,7 @@ $.widget 'ui.hideoverlay',
   _attachSpinjs: ->
     if not @_showDefer then return @
     if not @_spinning then return @
-    spinopts = 
-      color:'#fff'
-      lines: 15
-      length: 22
-      radius: 40
-    (new Spinner spinopts).spin(@$spinner[0])
+    (new Spinner @options.spinjs_options).spin(@$spinner[0])
 
   _handleIE6: ->
     if not ie6 then return @
@@ -127,6 +127,7 @@ $.widget 'ui.hideoverlay',
           if @options.spinjs
             @$spinner.show()
             @_attachSpinjs()
+          @$spinner.show()
         defer.resolve()
     .promise()
 
@@ -194,7 +195,9 @@ $.ui.hideoverlay.create = (options) ->
   $(src).hideoverlay(options)
 
 $.ui.hideoverlay.setup = (options) ->
-  if widgets.$overlay then return widgets.$overlay
+  if widgets.$overlay
+    widgets.$overlay.hideoverlay('destroy').remove()
+    widgets.$overlay = null
   $overlay = $.ui.hideoverlay.create(options).appendTo 'body'
   widgets.$overlay = $overlay
   $overlay
@@ -321,8 +324,8 @@ $.widget 'ui.domwindowdialog',
 
     @_attachOneTimeEvents o, 'open', currentOpen
 
-    w = o.width or @options.width
-    h = o.height or @options.height
+    w = o?.width or @options.width
+    h = o?.height or @options.height
     @$el.css
       width: w
       height: h
@@ -400,7 +403,9 @@ $.ui.domwindowdialog.create = (options) ->
   $(src).domwindowdialog(options)
 
 $.ui.domwindowdialog.setup = (options) ->
-  if widgets.$dialog then return widgets.$dialog
+  if widgets.$dialog
+    widgets.$dialog.domwindowdialog('destroy').remove()
+    widgets.$dialog = null
   $dialog = $.ui.domwindowdialog.create options
   $dialog.appendTo 'body'
   overlayOptions = genOverlayOptions(options)

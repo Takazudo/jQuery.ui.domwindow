@@ -69,7 +69,13 @@
       spinnersrc: null,
       maxopacity: 0.8,
       bgiframe: false,
-      spinjs: false
+      spinjs: false,
+      spinjs_options: {
+        color: '#fff',
+        lines: 15,
+        length: 22,
+        radius: 40
+      }
     },
     widgetEventPrefix: 'hideoverlay.',
     _active: false,
@@ -84,16 +90,9 @@
       return this;
     },
     _attachSpinjs: function() {
-      var spinopts;
       if (!this._showDefer) return this;
       if (!this._spinning) return this;
-      spinopts = {
-        color: '#fff',
-        lines: 15,
-        length: 22,
-        radius: 40
-      };
-      return (new Spinner(spinopts)).spin(this.$spinner[0]);
+      return (new Spinner(this.options.spinjs_options)).spin(this.$spinner[0]);
     },
     _handleIE6: function() {
       if (!ie6) return this;
@@ -155,6 +154,7 @@
               _this.$spinner.show();
               _this._attachSpinjs();
             }
+            _this.$spinner.show();
           }
           return defer.resolve();
         }
@@ -241,7 +241,10 @@
 
   $.ui.hideoverlay.setup = function(options) {
     var $overlay;
-    if (widgets.$overlay) return widgets.$overlay;
+    if (widgets.$overlay) {
+      widgets.$overlay.hideoverlay('destroy').remove();
+      widgets.$overlay = null;
+    }
     $overlay = $.ui.hideoverlay.create(options).appendTo('body');
     widgets.$overlay = $overlay;
     return $overlay;
@@ -375,8 +378,8 @@
         }
       }
       this._attachOneTimeEvents(o, 'open', currentOpen);
-      w = o.width || this.options.width;
-      h = o.height || this.options.height;
+      w = (o != null ? o.width : void 0) || this.options.width;
+      h = (o != null ? o.height : void 0) || this.options.height;
       this.$el.css({
         width: w,
         height: h
@@ -476,7 +479,10 @@
 
   $.ui.domwindowdialog.setup = function(options) {
     var $dialog, overlayOptions;
-    if (widgets.$dialog) return widgets.$dialog;
+    if (widgets.$dialog) {
+      widgets.$dialog.domwindowdialog('destroy').remove();
+      widgets.$dialog = null;
+    }
     $dialog = $.ui.domwindowdialog.create(options);
     $dialog.appendTo('body');
     overlayOptions = genOverlayOptions(options);

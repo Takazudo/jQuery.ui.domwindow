@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jQuery.ui.domwindow</title>
+<link rel="stylesheet" href="../domwindow.css">
+<style>
+body{
+	text-align:center;
+	font-family:sans-serif;
+	line-height:1.5;
+}
+#all{
+	text-align:left;
+	width:800px;
+	margin:0 auto;
+	padding:20px 0 50px;
+}
+.ui-domwindowdialog{
+	background:#fff;
+}
+pre{
+	border:1px solid #000;
+	padding:10px;
+	font-size:15px;
+	font-family:monospace;
+}
+table{
+	border-collapse:collapse;
+}
+th,td{
+	border:1px solid #000;
+	text-align:left;
+	vertical-align:top;
+	padding:5px 10px;
+}
+th{
+	white-space:nowrap;
+}
+td{
+	width:100%;
+}
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="../lib/jquery.ui.widget.js"></script>
+<script src="../jquery.ui.domwindow.js"></script>
+</head>
+<body><div id="all">
+<h1><a href="https://github.com/Takazudo/jQuery.ui.domwindow">jQuery.ui.domwindow</a> - demo - options</h1>
+<h2>basics</h2>
+<p>Everytime <code>$.ui.domwindowdialog.setup</code> was called, it replaces old settings.<br>Pass options like below.</p>
+<h2>overlayclickclose</h2>
+<p>close or not when overlay was closed. "true" as default.</p>
+<pre>$.ui.domwindowdialog.setup(optionsObject);</pre>
+<script>
+$(function(){
+	$('#options1-setup1').click(function(){
+		$.ui.domwindowdialog.setup({
+			overlayclickclose: true
+		});
+	});
+	$('#options1-setup2').click(function(){
+		$.ui.domwindowdialog.setup({
+			overlayclickclose: false
+		});
+	});
+	$('#options1-open').click(function(){
+		domwindowApi.open('dialog1.html');
+	});
+});
+</script>
+<button id="options1-setup1">setup as true</button> or 
+<button id="options1-setup2">setup as false</button> then 
+<button id="options1-open">let me try ajaxdialog</button>
+<pre>$(function(){
+    $('#options1-setup1').click(function(){
+        $.ui.domwindowdialog.setup({
+            overlayclickclose: true
+        });
+    });
+    $('#options1-setup2').click(function(){
+        $.ui.domwindowdialog.setup({
+            overlayclickclose: false
+        });
+    });
+    $('#options1-open').click(function(){
+        domwindowApi.open('dialog1.html');
+    });
+});</pre>
+
+<h2>overlayfade</h2>
+<p>Enable or not fade animation on overlay. "true" as default.</p>
+<button id="options2-setup1">setup as true</button> or 
+<button id="options2-setup2">setup as false</button> then 
+<button id="options2-open">let me try ajaxdialog</button>
+<script>
+$(function(){
+	$('#options2-setup1').click(function(){
+		$.ui.domwindowdialog.setup({
+			overlayfade: true
+		});
+	});
+	$('#options2-setup2').click(function(){
+		$.ui.domwindowdialog.setup({
+			overlayfade: false
+		});
+	});
+	$('#options2-open').click(function(){
+		domwindowApi.open('dialog1.html');
+	});
+});
+</script>
+<pre>$(function(){
+    $('#options2-setup1').click(function(){
+        $.ui.domwindowdialog.setup({
+            overlayfade: true
+        });
+    });
+    $('#options2-setup2').click(function(){
+        $.ui.domwindowdialog.setup({
+            overlayfade: false
+        });
+    });
+    $('#options2-open').click(function(){
+        domwindowApi.open('dialog1.html');
+    });
+});</pre>
+
+<h2>maxopacity</h2>
+<p>opacity of the overlay. 0.8 as default</p>
+<button id="options3-setup1">setup as 0.9</button> or 
+<button id="options3-setup2">setup as 0.3</button> then 
+<button id="options3-open">let me try ajaxdialog</button>
+<script>
+$(function(){
+	$('#options3-setup1').click(function(){
+		$.ui.domwindowdialog.setup({
+			maxopacity: 0.9
+		});
+	});
+	$('#options3-setup2').click(function(){
+		$.ui.domwindowdialog.setup({
+			maxopacity: 0.3
+		});
+	});
+	$('#options3-open').click(function(){
+		domwindowApi.open('dialog1.html');
+	});
+});
+</script>
+<pre>$(function(){
+    $('#options3-setup1').click(function(){
+        $.ui.domwindowdialog.setup({
+            maxopacity: 0.9
+        });
+    });
+    $('#options3-setup2').click(function(){
+        $.ui.domwindowdialog.setup({
+            maxopacity: 0.3
+        });
+    });
+    $('#options3-open').click(function(){
+        domwindowApi.open('dialog1.html');
+    });
+});</pre>
+
+<h2>other options</h2>
+
+<table>
+	<tr>
+		<th>height</th>
+		<td>Height of dialog</td>
+	</tr>
+	<tr>
+		<th>width</th>
+		<td>Width of dialog</td>
+	</tr>
+	<tr>
+		<th>fixedMinY</th>
+		<td>Minimum top margin when diaglog was over the bottom of the page.<br>
+			Make window size small then check what this means.
+		</td>
+	</tr>
+	<tr>
+		<th>selector_open</th>
+		<td>dialog opener selector.<br>
+		'.apply-domwindow-open' as default.<br>
+		Domwindow watches the click using event delegation.</td>
+	</tr>
+	<tr>
+		<th>selector_close</th>
+		<td>dialog closer selector.<br>
+		'.apply-domwindow-close' as default.<br>
+		Domwindow watches the click using event delegation. </td>
+	</tr>
+	<tr>
+		<th>ajaxdialog</th>
+		<td>
+			Make default dialog to ajaxdialog.<br>
+			Any apicall or data-domwindow-[dialogtype]="true" will override this.<br>
+			"true" as default.
+		</td>
+	</tr>
+	<tr>
+		<th>iframedialog</th>
+		<td>
+			Make default dialog to iframedialog.<br>
+			Any apicall or data-domwindow-[dialogtype]="true" will override this.<br>
+			"false" as default.
+		</td>
+	</tr>
+	<tr>
+		<th>iddialog</th>
+		<td>
+			Make default dialog to iddialog.<br>
+			Any apicall or data-domwindow-[dialogtype]="true" will override this.<br>
+			"false" as default.
+		</td>
+	</tr>
+	<tr>
+		<th>ajaxdialog_avoidcache</th>
+		<td>
+			Make nocache to true when ajaxed.<br>
+			"true" as default.
+		</td>
+	</tr>
+	<tr>
+		<th>ajaxdialog_mindelay</th>
+		<td>
+			Set minimum delay to dialog open when ajaxdialog was used.<br>
+			300 as default.
+		</td>
+	</tr>
+	<tr>
+		<th>bgiframe</th>
+		<td>
+			see <a href="http://takazudo.github.com/jQuery.ui.domwindow/example-bgiframe/">example-bgiframe</a>.<br>
+			"false" as default.
+		</td>
+	</tr>
+	<tr>
+		<th>spinjs</th>
+		<td>
+			see <a href="http://takazudo.github.com/jQuery.ui.domwindow/example-spinjs/">example-spinjs</a>.<br>
+			"false" as default.
+		</td>
+	</tr>
+	<tr>
+		<th>spinjs_options</th>
+		<td>
+			pass the options to create <a href="http://fgnass.github.com/spin.js/">Spin.js</a> instance.<br>
+			nice looks option as default.
+		</td>
+	</tr>
+</table>
+
+</div></body>
+</html>
