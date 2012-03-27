@@ -308,12 +308,15 @@ $.widget 'ui.domwindowdialog',
       currentOpen.defer.resolve()
 
     dialogType = null
-    if @options.ajaxdialog then dialogType = 'ajax'
-    if @options.iframedialog then dialogType = 'iframe'
-    if @options.iddialog then dialogType = 'id'
-    if o?.ajaxdialog then dialogType = 'ajax'
-    if o?.iframedialog then dialogType = 'iframe'
-    if o?.iddialog then dialogType = 'id'
+    if $.isFunction(src)
+      dialogType = 'deferred'
+    else
+      if @options.ajaxdialog then dialogType = 'ajax'
+      if @options.iframedialog then dialogType = 'iframe'
+      if @options.iddialog then dialogType = 'id'
+      if o?.ajaxdialog then dialogType = 'ajax'
+      if o?.iframedialog then dialogType = 'iframe'
+      if o?.iddialog then dialogType = 'id'
 
     # if domwindow widget was attached to the target,
     # invoke its events when the dialog was opened or closed.
@@ -332,10 +335,18 @@ $.widget 'ui.domwindowdialog',
 
     @_trigger 'beforeopen', {}, { dialog: @$el }
 
+    delay = @options.ajaxdialog_mindelay
+
     switch dialogType
+      when 'deferred'
+        @overlay?.show()
+        defer = $.Deferred()
+        src.apply @, [defer]
+        $.when(defer, (wait delay)).done (data) =>
+          @$el.empty().append data
+          complete()
       when 'ajax'
         @overlay?.show()
-        delay = @options.ajaxdialog_mindelay
         $.when((@_ajaxGet src), (wait delay)).done (args...) =>
           data = args[0][0]
           @$el.empty().append data

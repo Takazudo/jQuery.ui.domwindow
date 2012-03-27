@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jQuery.ui.domwindow</title>
+<link rel="stylesheet" href="../domwindow.css">
+<style>
+body{
+	text-align:center;
+	font-family:sans-serif;
+	line-height:1.5;
+}
+#all{
+	text-align:left;
+	width:800px;
+	margin:0 auto;
+	padding:20px 0 50px;
+}
+.ui-domwindowdialog{
+	background:#fff;
+}
+pre{
+	border:1px solid #000;
+	padding:10px;
+	font-size:15px;
+	font-family:monospace;
+}
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="../lib/jquery.ui.widget.js"></script>
+<script src="../jquery.ui.domwindow.js"></script>
+<script>
+if (!window.console){
+	window.console = {}
+	window.console.log = function(arg){
+		alert(arg);
+
+	};
+}
+$(function(){
+	$.ui.domwindowdialog.setup({
+		width: 600, // dialog width
+		height: 300, // dialog height
+		spinnersrc: '../spinner.gif' // specify this for preload
+	});
+});
+</script>
+</head>
+<body><div id="all">
+<h1><a href="https://github.com/Takazudo/jQuery.ui.domwindow">jQuery.ui.domwindow</a> - demo - deferredopen</h1>
+<h2>async open</h2>
+<p>Pass the function like below if you want to make custom deferred dialog open.<br>
+This may be useful when you need to load resource from template source manager or something.
+</p>
+<button id="defopen-open">open</button>
+<script>
+$(function(){
+	$('#defopen-open').click(function(){
+		window.domwindowApi.open(function(defer){
+			// prepare html from somewhere asyncly
+			$.ajax({
+				url: 'dialog1.html',
+				dataType: 'text'
+			}).done(function(data){
+				setTimeout(function(){
+					defer.resolve(data);
+				}, 2000);
+			});
+		}, {
+			ajaxdialog: true,
+			width: 400,
+			height: 400
+		});
+	});
+});
+</script>
+<pre>$(function(){
+    $('#defopen-open').click(function(){
+        window.domwindowApi.open(function(defer){
+            // prepare html from somewhere asyncly
+            $.ajax({
+                url: 'dialog1.html',
+                dataType: 'text'
+            }).done(function(data){
+                setTimeout(function(){
+                    defer.resolve(data);
+                }, 2000);
+            });
+        }, {
+            ajaxdialog: true,
+            width: 400,
+            height: 400
+        });
+    });
+});</pre>
+
+</div></body>
+</html>

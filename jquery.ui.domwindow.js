@@ -1,4 +1,4 @@
-/*! jQuery.ui.domwindow - v0.0.0 -  3/27/2012
+/*! jQuery.ui.domwindow - v0.0.0 -  3/28/2012
  * https://github.com/Takazudo/jQuery.ui.domwindow
  * Copyright (c) 2012 "Takazudo" Takeshi Takatsudo; Licensed MIT */
 
@@ -340,7 +340,7 @@
       return this;
     },
     open: function(src, options) {
-      var $target, complete, currentOpen, delay, dialogType, h, o, w, _ref, _ref2, _ref3,
+      var $target, complete, currentOpen, defer, delay, dialogType, h, o, w, _ref, _ref2, _ref3, _ref4,
         _this = this;
       o = options;
       this._isOpen = true;
@@ -365,12 +365,16 @@
         return currentOpen.defer.resolve();
       };
       dialogType = null;
-      if (this.options.ajaxdialog) dialogType = 'ajax';
-      if (this.options.iframedialog) dialogType = 'iframe';
-      if (this.options.iddialog) dialogType = 'id';
-      if (o != null ? o.ajaxdialog : void 0) dialogType = 'ajax';
-      if (o != null ? o.iframedialog : void 0) dialogType = 'iframe';
-      if (o != null ? o.iddialog : void 0) dialogType = 'id';
+      if ($.isFunction(src)) {
+        dialogType = 'deferred';
+      } else {
+        if (this.options.ajaxdialog) dialogType = 'ajax';
+        if (this.options.iframedialog) dialogType = 'iframe';
+        if (this.options.iddialog) dialogType = 'id';
+        if (o != null ? o.ajaxdialog : void 0) dialogType = 'ajax';
+        if (o != null ? o.iframedialog : void 0) dialogType = 'iframe';
+        if (o != null ? o.iddialog : void 0) dialogType = 'id';
+      }
       if (dialogType === 'id') {
         $target = $('#' + src);
         if ($target.is(':ui-domwindow')) {
@@ -387,10 +391,19 @@
       this._trigger('beforeopen', {}, {
         dialog: this.$el
       });
+      delay = this.options.ajaxdialog_mindelay;
       switch (dialogType) {
-        case 'ajax':
+        case 'deferred':
           if ((_ref = this.overlay) != null) _ref.show();
-          delay = this.options.ajaxdialog_mindelay;
+          defer = $.Deferred();
+          src.apply(this, [defer]);
+          $.when(defer, wait(delay)).done(function(data) {
+            _this.$el.empty().append(data);
+            return complete();
+          });
+          break;
+        case 'ajax':
+          if ((_ref2 = this.overlay) != null) _ref2.show();
           $.when(this._ajaxGet(src), wait(delay)).done(function() {
             var args, data;
             args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
@@ -400,12 +413,12 @@
           });
           break;
         case 'iframe':
-          if ((_ref2 = this.overlay) != null) _ref2.show(true);
+          if ((_ref3 = this.overlay) != null) _ref3.show(true);
           this.$el.empty().append(this._createIframeSrc(src));
           complete();
           break;
         case 'id':
-          if ((_ref3 = this.overlay) != null) _ref3.show(true);
+          if ((_ref4 = this.overlay) != null) _ref4.show(true);
           this.$el.empty().append($target.html());
           complete();
       }
