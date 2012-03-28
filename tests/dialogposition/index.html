@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jQuery.ui.domwindow</title>
+<link rel="stylesheet" href="../../domwindow.css">
+<style>
+body{
+	text-align:center;
+	font-family:sans-serif;
+	line-height:1.5;
+}
+#all{
+	text-align:left;
+	width:1200px;
+	background:#ddd;
+	margin:0 auto;
+	padding:20px 0 50px;
+}
+.ui-domwindowdialog{
+	background:#fff;
+}
+pre{
+	border:1px solid #000;
+	padding:10px;
+	font-size:15px;
+	font-family:monospace;
+}
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="../../lib/jquery.ui.widget.js"></script>
+<script src="../../jquery.ui.domwindow.js"></script>
+<script>
+if (!window.console){
+	window.console = {}
+	window.console.log = function(arg){
+		alert(arg);
+
+	};
+}
+$(function(){
+	$.ui.domwindowdialog.setup({
+		iddialog: true
+	});
+});
+</script>
+</head>
+<body><div id="all">
+
+<div style="text-align:center"><button class="test1">test1</button></div>
+<div style="text-align:center"><button class="test2">test2</button></div>
+<div style="text-align:center"><button class="test3">test3</button></div>
+<div style="text-align:center"><button class="test4">test4</button></div>
+<div style="height:800px"></div>
+<div style="text-align:center"><button class="test1">test1</button></div>
+<div style="text-align:center"><button class="test2">test2</button></div>
+<div style="text-align:center"><button class="test3">test3</button></div>
+<div style="text-align:center"><button class="test4">test4</button></div>
+<div style="height:800px"></div>
+<div style="text-align:center"><button class="test1">test1</button></div>
+<div style="text-align:center"><button class="test2">test2</button></div>
+<div style="text-align:center"><button class="test3">test3</button></div>
+<div style="text-align:center"><button class="test4">test4</button></div>
+<div style="height:800px"></div>
+<div style="text-align:center"><button class="test1">test1</button></div>
+<div style="text-align:center"><button class="test2">test2</button></div>
+<div style="text-align:center"><button class="test3">test3</button></div>
+<div style="text-align:center"><button class="test4">test4</button></div>
+<div style="height:800px"></div>
+<div style="text-align:center"><button class="test1">test1</button></div>
+<div style="text-align:center"><button class="test2">test2</button></div>
+<div style="text-align:center"><button class="test3">test3</button></div>
+<div style="text-align:center"><button class="test4">test4</button></div>
+<div style="height:800px"></div>
+<div style="text-align:center"><button class="test1">test1</button></div>
+<div style="text-align:center"><button class="test2">test2</button></div>
+<div style="text-align:center"><button class="test3">test3</button></div>
+<div style="text-align:center"><button class="test4">test4</button></div>
+<script>
+$(function(){
+	var open = function(w, h){
+		window.domwindowApi.open('iddialogcontent', {
+			width: w,
+			height: h
+		});
+	};
+	$('.test1').click(function(){
+		open(340, 340);
+	});
+	$('.test2').click(function(){
+		open(2000, 180);
+	});
+	$('.test3').click(function(){
+		open(500, 2000);
+	});
+	$('.test4').click(function(){
+		open(2000, 2000);
+	});
+});
+</script>
+
+<script type="text/x-dialogsrc" id="iddialogcontent">
+	<div style="padding:30px">
+		<h2>iddialog example</h2>
+		<p><a class="apply-domwindow-close" href="#">close</a></p>
+	</div>
+</script>
+
+</div></body>
+</html>

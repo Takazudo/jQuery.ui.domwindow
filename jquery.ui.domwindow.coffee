@@ -35,8 +35,8 @@ resolveSilently = ->
 
 viewportH = -> win.innerHeight or doc.documentElement.clientHeight or doc.body.clientHeight
 viewportW = -> win.innerWidth or doc.documentElement.clientWidth or doc.body.clientWidth
-scrollOffsetH = -> win.pageYOffset or doc.documentElement.scrollTop or doc.body.scrollTop
-scrollOffsetW = -> win.pageXOffset or doc.documentElement.scrollLeft or doc.body.scrollLeft
+offsetY = -> win.pageYOffset or doc.documentElement.scrollTop or doc.body.scrollTop
+offsetX = -> win.pageXOffset or doc.documentElement.scrollLeft or doc.body.scrollLeft
 
 # setTimeout wrapper
 
@@ -257,36 +257,46 @@ $.widget 'ui.domwindowdialog',
   center: ->
 
     props = {}
-    props.left = round( viewportW()/2 + scrollOffsetW() - round(@$el.outerWidth()/2) )
 
-    setTopAbsolutely = =>
-      props.top = round( viewportH()/2 + scrollOffsetH() - round(@$el.outerHeight()/2) )
-    setTopFixedly = =>
-      props.top = round( viewportH()/2 - round(@$el.outerHeight()/2) )
+    elH = @$el.outerHeight()
+    elW = @$el.outerWidth()
+    vpW = viewportW()
+    vpH = viewportH()
+    offY = offsetY()
+    offX = offsetX()
 
-    # can't see left side if window was too samll
-    if props.left < 0 then props.left = 0
+    isLeftOver = vpW < elW
+    isBottomOver = vpH < elH + 50
 
-    # if win height was enough, put the dialog to the center
-    if @$el.innerHeight() + 50 < viewportH()
-      if ie6
+    if isLeftOver
+      props.left = 0 # bring it back to 0
+      if isBottomOver
+        # when wide and tall - fit to the left top corner
         props.position = 'absolute'
-        setTopAbsolutely()
+        props.top = @options.fixedMinY + offY
       else
-        if props.left isnt 0
-          props.position = 'fixed'
-          setTopFixedly()
-        # but win width was not enough, stop fixed
-        else
-          props.position = 'absolute'
-          setTopAbsolutely()
-  
-    # if win height was not enough, put the dialog to the dialog absolutely
-    # because the we can't see the bottom of the dialog with fixed
+        # when wide - fit to the left edge
+        props.position = 'absolute'
+        props.top = round(vpH/2) - round(elH/2) + offY
     else
-      props.position = 'absolute'
-      props.top = @options.fixedMinY + scrollOffsetH()
+      if isBottomOver
+        # when tall - fit to the top edge
+        props.position = 'absolute'
+        props.top = @options.fixedMinY + offY
+        props.left = round(vpW/2) - round(elW/2) + offX
+      else
+        # when small - put the very center
+        props.top = round(vpH/2) - round(elH/2)
+        props.left = round(vpW/2) - round(elW/2)
+        if ie6
+          props.position = 'absolute'
+          props.top += offY
+          props.left += offX
+        else
+          props.position = 'fixed'
+
     @$el.css props
+
     @
 
   open: (src, options) ->
@@ -411,9 +421,7 @@ $.widget 'ui.domwindowdialog',
 
 $.ui.domwindowdialog.create = (options) ->
   src = """
-    <div class="ui-domwindowdialog">
-      <a href="#" class="apply-domwindow-close">close</a>
-    </div>
+    <div class="ui-domwindowdialog"></div>
   """
   $(src).domwindowdialog(options)
 

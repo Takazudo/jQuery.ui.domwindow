@@ -3,7 +3,7 @@
  * Copyright (c) 2012 "Takazudo" Takeshi Takatsudo; Licensed MIT */
 
 (function() {
-  var $doc, $win, DomwindowApi, doc, domwindowApi, genOverlayOptions, genUniqId, getInfoFromOpener, ie6, resolveSilently, round, scrollOffsetH, scrollOffsetW, viewportH, viewportW, wait, widgets, win,
+  var $doc, $win, DomwindowApi, doc, domwindowApi, genOverlayOptions, genUniqId, getInfoFromOpener, ie6, offsetX, offsetY, resolveSilently, round, viewportH, viewportW, wait, widgets, win,
     __slice = Array.prototype.slice;
 
   win = window;
@@ -47,11 +47,11 @@
     return win.innerWidth || doc.documentElement.clientWidth || doc.body.clientWidth;
   };
 
-  scrollOffsetH = function() {
+  offsetY = function() {
     return win.pageYOffset || doc.documentElement.scrollTop || doc.body.scrollTop;
   };
 
-  scrollOffsetW = function() {
+  offsetX = function() {
     return win.pageXOffset || doc.documentElement.scrollLeft || doc.body.scrollLeft;
   };
 
@@ -308,33 +308,41 @@
       return this;
     },
     center: function() {
-      var props, setTopAbsolutely, setTopFixedly,
-        _this = this;
+      var elH, elW, isBottomOver, isLeftOver, offX, offY, props, vpH, vpW;
       props = {};
-      props.left = round(viewportW() / 2 + scrollOffsetW() - round(this.$el.outerWidth() / 2));
-      setTopAbsolutely = function() {
-        return props.top = round(viewportH() / 2 + scrollOffsetH() - round(_this.$el.outerHeight() / 2));
-      };
-      setTopFixedly = function() {
-        return props.top = round(viewportH() / 2 - round(_this.$el.outerHeight() / 2));
-      };
-      if (props.left < 0) props.left = 0;
-      if (this.$el.innerHeight() + 50 < viewportH()) {
-        if (ie6) {
+      elH = this.$el.outerHeight();
+      elW = this.$el.outerWidth();
+      vpW = viewportW();
+      vpH = viewportH();
+      offY = offsetY();
+      offX = offsetX();
+      isLeftOver = vpW < elW;
+      isBottomOver = vpH < elH + 50;
+      if (isLeftOver) {
+        props.left = 0;
+        if (isBottomOver) {
           props.position = 'absolute';
-          setTopAbsolutely();
+          props.top = this.options.fixedMinY + offY;
         } else {
-          if (props.left !== 0) {
-            props.position = 'fixed';
-            setTopFixedly();
-          } else {
-            props.position = 'absolute';
-            setTopAbsolutely();
-          }
+          props.position = 'absolute';
+          props.top = round(vpH / 2) - round(elH / 2) + offY;
         }
       } else {
-        props.position = 'absolute';
-        props.top = this.options.fixedMinY + scrollOffsetH();
+        if (isBottomOver) {
+          props.position = 'absolute';
+          props.top = this.options.fixedMinY + offY;
+          props.left = round(vpW / 2) - round(elW / 2) + offX;
+        } else {
+          props.top = round(vpH / 2) - round(elH / 2);
+          props.left = round(vpW / 2) - round(elW / 2);
+          if (ie6) {
+            props.position = 'absolute';
+            props.top += offY;
+            props.left += offX;
+          } else {
+            props.position = 'fixed';
+          }
+        }
       }
       this.$el.css(props);
       return this;
@@ -489,7 +497,7 @@
 
   $.ui.domwindowdialog.create = function(options) {
     var src;
-    src = "<div class=\"ui-domwindowdialog\">\n  <a href=\"#\" class=\"apply-domwindow-close\">close</a>\n</div>";
+    src = "<div class=\"ui-domwindowdialog\"></div>";
     return $(src).domwindowdialog(options);
   };
 
