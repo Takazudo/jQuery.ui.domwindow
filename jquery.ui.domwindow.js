@@ -1,4 +1,4 @@
-/*! jQuery.ui.domwindow - v0.1.0 -  3/28/2012
+/*! jQuery.ui.domwindow - v0.2a -  3/28/2012
  * https://github.com/Takazudo/jQuery.ui.domwindow
  * Copyright (c) 2012 "Takazudo" Takeshi Takatsudo; Licensed MIT */
 
@@ -374,9 +374,12 @@
       }
       if (dialogType === 'id') {
         $target = $('#' + src);
+        this.$lastIdTarget = $target;
         if ($target.is(':ui-domwindow')) {
           o = $.extend({}, $target.domwindow('createApiOpenOptions'), o);
         }
+      } else {
+        this.$lastIdTarget = null;
       }
       this._attachOneTimeEvents(o, 'open', currentOpen);
       w = (o != null ? o.width : void 0) || this.options.width;
@@ -429,6 +432,9 @@
       return $.Deferred(function(defer) {
         var _ref;
         if (!_this._isOpen) return _this;
+        if (_this.$lastIdTarget) {
+          options = $.extend({}, options, _this.$lastIdTarget.domwindow('createApiCloseOptions'));
+        }
         _this._attachOneTimeEvents(options, 'close');
         if ((_ref = _this._currentOpen) != null) _ref.kill();
         _this._isOpen = false;
@@ -618,7 +624,7 @@
       return domwindowApi.open(this._id, this.createApiOpenOptions());
     },
     close: function() {
-      return domwindowApi.close(this.createApiCloseOptions());
+      return domwindowApi.close();
     }
   });
 

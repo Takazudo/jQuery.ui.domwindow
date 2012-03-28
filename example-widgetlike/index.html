@@ -79,7 +79,7 @@ $(function(){
 		},
 		afteropen: function(e, data){
 			console.log('option afteropen!', data.dialog);
-			// bind close to buttons in dialog
+			// can also close like widget
 			$('.widgetlike2-close', data.dialog).click(function(){
 				$domwin.domwindow('close');
 			});

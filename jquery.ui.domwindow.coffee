@@ -321,8 +321,11 @@ $.widget 'ui.domwindowdialog',
     # invoke its events when the dialog was opened or closed.
     if (dialogType is 'id')
       $target = $('#' + src)
+      @$lastIdTarget = $target # store target to know close events
       if $target.is(':ui-domwindow')
         o = $.extend {}, $target.domwindow('createApiOpenOptions'), o
+    else
+      @$lastIdTarget = null
 
     @_attachOneTimeEvents o, 'open', currentOpen
 
@@ -365,6 +368,8 @@ $.widget 'ui.domwindowdialog',
   close: (options) ->
     $.Deferred (defer) =>
       if not @_isOpen then return @
+      if @$lastIdTarget
+        options = $.extend {}, options, @$lastIdTarget.domwindow('createApiCloseOptions')
       @_attachOneTimeEvents options, 'close'
       @_currentOpen?.kill()
       @_isOpen = false
@@ -514,6 +519,6 @@ $.widget 'ui.domwindow',
   open: ->
     domwindowApi.open @_id, @createApiOpenOptions()
   close: ->
-    domwindowApi.close @createApiCloseOptions()
+    domwindowApi.close()
 
 
