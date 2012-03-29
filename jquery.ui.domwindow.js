@@ -6,15 +6,16 @@
   var __slice = Array.prototype.slice;
 
   (function($, win, doc) {
-    var $doc, $win, DomwindowApi, domwindowApi, genOverlayOptions, genUniqId, getInfoFromOpener, ie6, offsetX, offsetY, resolveSilently, round, viewportH, viewportW, wait, widgets;
+    var $doc, $win, DomwindowApi, domwindowApi, genOverlayOptions, genUniqId, getInfoFromOpener, ie6, ns, offsetX, offsetY, resolveSilently, round, viewportH, viewportW, wait, widgets;
     $win = $(win);
     $doc = $(doc);
     round = Math.round;
-    widgets = {
+    win.domwindowNs = ns = {};
+    win.domwindowApi = domwindowApi = null;
+    widgets = ns.widgets = {
       $dialog: null,
       $overlay: null
     };
-    win.domwindowApi = domwindowApi = null;
     ie6 = (function() {
       var $el;
       $el = $('<div><!--[if IE 6]><i></i><![endif]--></div>');
@@ -29,16 +30,16 @@
         return defer.resolve();
       });
     };
-    viewportH = function() {
+    viewportH = ns.viewportH = function() {
       return win.innerHeight || doc.documentElement.clientHeight || doc.body.clientHeight;
     };
-    viewportW = function() {
+    viewportW = ns.viewportW = function() {
       return win.innerWidth || doc.documentElement.clientWidth || doc.body.clientWidth;
     };
-    offsetY = function() {
+    offsetY = ns.offsetY = function() {
       return win.pageYOffset || doc.documentElement.scrollTop || doc.body.scrollTop;
     };
-    offsetX = function() {
+    offsetX = ns.offsetX = function() {
       return win.pageXOffset || doc.documentElement.scrollLeft || doc.body.scrollLeft;
     };
     wait = function(time) {
@@ -222,12 +223,15 @@
       src = "<div class=\"ui-hideoverlay\" id=\"domwindow-hideoverlay\">\n  <div class=\"ui-hideoverlay-bg\"></div>\n  <div class=\"ui-hideoverlay-spinner\"></div>\n</div>";
       return $(src).hideoverlay(options);
     };
+    $.ui.hideoverlay.destroy = function(options) {
+      if (!widgets.$overlay) return false;
+      widgets.$overlay.hideoverlay('destroy').remove();
+      widgets.$overlay = null;
+      return true;
+    };
     $.ui.hideoverlay.setup = function(options) {
       var $overlay;
-      if (widgets.$overlay) {
-        widgets.$overlay.hideoverlay('destroy').remove();
-        widgets.$overlay = null;
-      }
+      $.ui.hideoverlay.destroy();
       $overlay = $.ui.hideoverlay.create(options).appendTo('body');
       widgets.$overlay = $overlay;
       return $overlay;
@@ -481,12 +485,15 @@
       src = "<div class=\"ui-domwindowdialog\"></div>";
       return $(src).domwindowdialog(options);
     };
+    $.ui.domwindowdialog.destroy = function() {
+      if (!widgets.$dialog) return false;
+      widgets.$dialog.domwindowdialog('destroy').remove();
+      widgets.$dialog = null;
+      return true;
+    };
     $.ui.domwindowdialog.setup = function(options) {
       var $dialog, overlayOptions;
-      if (widgets.$dialog) {
-        widgets.$dialog.domwindowdialog('destroy').remove();
-        widgets.$dialog = null;
-      }
+      $.ui.domwindowdialog.destroy();
       $dialog = $.ui.domwindowdialog.create(options);
       $dialog.appendTo('body');
       overlayOptions = genOverlayOptions(options);
@@ -504,7 +511,7 @@
       });
       return ret;
     };
-    getInfoFromOpener = function(el) {
+    getInfoFromOpener = ns.getInfoFromOpener = function(el) {
       var $el, o, ret, src;
       $el = $(el);
       ret = [];

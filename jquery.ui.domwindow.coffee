@@ -4,15 +4,16 @@
   $doc = $(doc)
   round = Math.round
 
+  # only these can be accessed from outside
+
+  win.domwindowNs = ns = {}
+  win.domwindowApi = domwindowApi = null
+
   # share dialog and overlay in this plugin
 
-  widgets =
+  widgets = ns.widgets =
     $dialog: null
     $overlay: null
-
-  # only this can be accessed from outside
-
-  win.domwindowApi = domwindowApi = null
 
 
   # ============================================================
@@ -33,10 +34,10 @@
 
   # handle viewport things
 
-  viewportH = -> win.innerHeight or doc.documentElement.clientHeight or doc.body.clientHeight
-  viewportW = -> win.innerWidth or doc.documentElement.clientWidth or doc.body.clientWidth
-  offsetY = -> win.pageYOffset or doc.documentElement.scrollTop or doc.body.scrollTop
-  offsetX = -> win.pageXOffset or doc.documentElement.scrollLeft or doc.body.scrollLeft
+  viewportH = ns.viewportH = -> win.innerHeight or doc.documentElement.clientHeight or doc.body.clientHeight
+  viewportW = ns.viewportW = -> win.innerWidth or doc.documentElement.clientWidth or doc.body.clientWidth
+  offsetY = ns.offsetY = -> win.pageYOffset or doc.documentElement.scrollTop or doc.body.scrollTop
+  offsetX = ns.offsetX = -> win.pageXOffset or doc.documentElement.scrollLeft or doc.body.scrollLeft
 
   # setTimeout wrapper
 
@@ -194,10 +195,14 @@
     """
     $(src).hideoverlay(options)
 
+  $.ui.hideoverlay.destroy = (options) ->
+    if not widgets.$overlay then return false
+    widgets.$overlay.hideoverlay('destroy').remove()
+    widgets.$overlay = null
+    true
+
   $.ui.hideoverlay.setup = (options) ->
-    if widgets.$overlay
-      widgets.$overlay.hideoverlay('destroy').remove()
-      widgets.$overlay = null
+    $.ui.hideoverlay.destroy()
     $overlay = $.ui.hideoverlay.create(options).appendTo 'body'
     widgets.$overlay = $overlay
     $overlay
@@ -425,10 +430,14 @@
     """
     $(src).domwindowdialog(options)
 
+  $.ui.domwindowdialog.destroy = ->
+    if not widgets.$dialog then return false
+    widgets.$dialog.domwindowdialog('destroy').remove()
+    widgets.$dialog = null
+    true
+
   $.ui.domwindowdialog.setup = (options) ->
-    if widgets.$dialog
-      widgets.$dialog.domwindowdialog('destroy').remove()
-      widgets.$dialog = null
+    $.ui.domwindowdialog.destroy()
     $dialog = $.ui.domwindowdialog.create options
     $dialog.appendTo 'body'
     overlayOptions = genOverlayOptions(options)
@@ -453,7 +462,7 @@
 
   # mostly we need to open dialog via anchor or button or something
 
-  getInfoFromOpener = (el) ->
+  getInfoFromOpener = ns.getInfoFromOpener = (el) ->
     $el = $(el)
     ret = []
 
