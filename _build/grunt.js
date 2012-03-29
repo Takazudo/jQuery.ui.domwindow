@@ -25,13 +25,17 @@ module.exports = function(grunt){
     },
     watch: {
       files: [
-        '../jquery.ui.domwindow.coffee'
+        '../jquery.ui.domwindow.coffee',
+        '../tests/qunit/test/test.coffee'
       ],
       tasks: 'coffee concat notifyOK'
     },
     coffee: {
       '../jquery.ui.domwindow.js':  [
         '../jquery.ui.domwindow.coffee'
+      ],
+      '../tests/qunit/test/test.js':  [
+        '../tests/qunit/test/test.coffee'
       ]
     },
     min: {
