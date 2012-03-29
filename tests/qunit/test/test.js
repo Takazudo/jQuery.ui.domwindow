@@ -53,7 +53,6 @@
           },
           showend: function() {
             ok(true, 'showend fired');
-            console.log(1);
             return wait(0).done(function() {
               return $overlay.hideoverlay('hide');
             });

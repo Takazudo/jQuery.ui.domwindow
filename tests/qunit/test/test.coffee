@@ -69,7 +69,6 @@
           ok true, 'showstart fired'
         showend: ->
           ok true, 'showend fired'
-          console.log 1
           wait(0).done -> $overlay.hideoverlay 'hide'
         hidestart: ->
           ok true, 'hidestart fired'
