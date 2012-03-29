@@ -325,12 +325,16 @@
       if $.isFunction(src)
         dialogType = 'deferred'
       else
-        if @options.ajaxdialog then dialogType = 'ajax'
-        if @options.iframedialog then dialogType = 'iframe'
-        if @options.iddialog then dialogType = 'id'
-        if o?.ajaxdialog then dialogType = 'ajax'
-        if o?.iframedialog then dialogType = 'iframe'
-        if o?.iddialog then dialogType = 'id'
+        if src.indexOf('#') is 0
+          dialogType = 'id'
+          src = src.replace /^#/, ''
+        else
+          if @options.ajaxdialog then dialogType = 'ajax'
+          if @options.iframedialog then dialogType = 'iframe'
+          if @options.iddialog then dialogType = 'id'
+          if o?.ajaxdialog then dialogType = 'ajax'
+          if o?.iframedialog then dialogType = 'iframe'
+          if o?.iddialog then dialogType = 'id'
 
       # if domwindow widget was attached to the target,
       # invoke its events when the dialog was opened or closed.

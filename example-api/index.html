@@ -189,6 +189,15 @@ $(function(){
         });
     });
 });</pre>
+<p>Iddialog also works with '#id'</p>
+<pre>$(function(){
+    $('#apiex-iddialog-open').click(function(){
+        window.domwindowApi.open('#iddialogcontent', {
+            width: 800,
+            height: 800,
+        });
+    });
+});</pre>
 
 <script type="text/x-dialogsrc" id="iddialogcontent">
 	<div style="padding:30px">

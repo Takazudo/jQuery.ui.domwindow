@@ -337,6 +337,26 @@
           start()
 
 
+    asyncTest 'domwindowdialog iddialog via passing #id string', ->
+
+      expect 1
+
+      $testdiv.html """
+        <script type="text/x-dialogcontent" id="foobar"><i>foobar</i></script>
+      """
+      $.ui.domwindowdialog.setup
+        ajaxdialog: true
+      api = win.domwindowApi
+
+      api.open '#foobar',
+        afteropen: (e, data) ->
+          equal (data.dialog.find 'i').text(), 'foobar', 'fetched html was in dialog'
+          wait(0).done -> api.close()
+        afterclose: ->
+          $testdiv.empty()
+          start()
+
+
     asyncTest 'domwindowdialog deferredopen', ->
 
       expect 2
@@ -353,6 +373,90 @@
           wait(0).done -> api.close()
         afterclose: ->
           start()
+
+
+    asyncTest 'widgetstyle events', ->
+      
+      expect 18
+
+      $dialog = $.ui.domwindowdialog.setup()
+      $testdiv.html """
+        <script type="text/x-dialogcontent" id="foobar"><i>foobar</i></script>
+      """
+      $domwin = $testdiv.find('#foobar').domwindow()
+      domwin = $domwin.data 'domwindow'
+
+      firstClose = $.Deferred()
+      secondClose = $.Deferred()
+
+      $domwin.on 'domwindow.beforeopen', (e, data) ->
+        ok true, 'beforeopen - fired'
+        equal $dialog[0], data.dialog[0], 'beforeopen - dialog was passed'
+
+      $domwin.on 'domwindow.afteropen', (e, data) ->
+        ok true, 'afteropen - fired'
+        equal $dialog[0], data.dialog[0], 'afteropen - dialog was passed'
+        ok (data.dialog.find('i').size() is 1), 'afteropen - found attached html in dialog'
+        wait(0).done -> domwin.close()
+
+      $domwin.on 'domwindow.beforeclose', (e, data) ->
+        ok true, 'beforeclose - fired'
+        equal $dialog[0], data.dialog[0], 'beforeclose - dialog was passed'
+
+      $domwin.on 'domwindow.afterclose', (e, data) ->
+        ok true, 'afterclose - fired'
+        equal $dialog[0], data.dialog[0], 'afterclose - dialog was passed'
+        if not firstClose.isResolved()
+          firstClose.resolve()
+        else
+          secondClose.resolve()
+
+      firstClose.done -> domwin.open()
+      secondClose.done -> start()
+      domwin.open()
+
+
+    asyncTest 'widgetstyle events ensure they work with api call', ->
+      
+      expect 18
+
+      $dialog = $.ui.domwindowdialog.setup
+        iddialog: true
+      $testdiv.html """
+        <script type="text/x-dialogcontent" id="foobar"><i>foobar</i></script>
+      """
+      api = win.domwindowApi
+      $domwin = $testdiv.find('#foobar').domwindow()
+      domwin = $domwin.data 'domwindow'
+
+      firstClose = $.Deferred()
+      secondClose = $.Deferred()
+
+      $domwin.on 'domwindow.beforeopen', (e, data) ->
+        ok true, 'beforeopen - fired'
+        equal $dialog[0], data.dialog[0], 'beforeopen - dialog was passed'
+
+      $domwin.on 'domwindow.afteropen', (e, data) ->
+        ok true, 'afteropen - fired'
+        equal $dialog[0], data.dialog[0], 'afteropen - dialog was passed'
+        ok (data.dialog.find('i').size() is 1), 'afteropen - found attached html in dialog'
+        wait(0).done -> api.close()
+
+      $domwin.on 'domwindow.beforeclose', (e, data) ->
+        ok true, 'beforeclose - fired'
+        equal $dialog[0], data.dialog[0], 'beforeclose - dialog was passed'
+
+      $domwin.on 'domwindow.afterclose', (e, data) ->
+        ok true, 'afterclose - fired'
+        equal $dialog[0], data.dialog[0], 'afterclose - dialog was passed'
+        if not firstClose.isResolved()
+          firstClose.resolve()
+        else
+          secondClose.resolve()
+
+      firstClose.done -> domwin.open()
+      secondClose.done -> start()
+      api.open 'foobar'
 
 
 ) jQuery, @

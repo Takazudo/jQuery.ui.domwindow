@@ -359,12 +359,17 @@
         if ($.isFunction(src)) {
           dialogType = 'deferred';
         } else {
-          if (this.options.ajaxdialog) dialogType = 'ajax';
-          if (this.options.iframedialog) dialogType = 'iframe';
-          if (this.options.iddialog) dialogType = 'id';
-          if (o != null ? o.ajaxdialog : void 0) dialogType = 'ajax';
-          if (o != null ? o.iframedialog : void 0) dialogType = 'iframe';
-          if (o != null ? o.iddialog : void 0) dialogType = 'id';
+          if (src.indexOf('#') === 0) {
+            dialogType = 'id';
+            src = src.replace(/^#/, '');
+          } else {
+            if (this.options.ajaxdialog) dialogType = 'ajax';
+            if (this.options.iframedialog) dialogType = 'iframe';
+            if (this.options.iddialog) dialogType = 'id';
+            if (o != null ? o.ajaxdialog : void 0) dialogType = 'ajax';
+            if (o != null ? o.iframedialog : void 0) dialogType = 'iframe';
+            if (o != null ? o.iddialog : void 0) dialogType = 'id';
+          }
         }
         if (dialogType === 'id') {
           $target = $('#' + src);

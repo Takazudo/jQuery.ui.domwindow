@@ -374,7 +374,28 @@
           }
         });
       });
-      return asyncTest('domwindowdialog deferredopen', function() {
+      asyncTest('domwindowdialog iddialog via passing #id string', function() {
+        var api;
+        expect(1);
+        $testdiv.html("<script type=\"text/x-dialogcontent\" id=\"foobar\"><i>foobar</i></script>");
+        $.ui.domwindowdialog.setup({
+          ajaxdialog: true
+        });
+        api = win.domwindowApi;
+        return api.open('#foobar', {
+          afteropen: function(e, data) {
+            equal((data.dialog.find('i')).text(), 'foobar', 'fetched html was in dialog');
+            return wait(0).done(function() {
+              return api.close();
+            });
+          },
+          afterclose: function() {
+            $testdiv.empty();
+            return start();
+          }
+        });
+      });
+      asyncTest('domwindowdialog deferredopen', function() {
         var api;
         expect(2);
         $.ui.domwindowdialog.setup();
@@ -395,6 +416,93 @@
             return start();
           }
         });
+      });
+      asyncTest('widgetstyle events', function() {
+        var $dialog, $domwin, domwin, firstClose, secondClose;
+        expect(18);
+        $dialog = $.ui.domwindowdialog.setup();
+        $testdiv.html("<script type=\"text/x-dialogcontent\" id=\"foobar\"><i>foobar</i></script>");
+        $domwin = $testdiv.find('#foobar').domwindow();
+        domwin = $domwin.data('domwindow');
+        firstClose = $.Deferred();
+        secondClose = $.Deferred();
+        $domwin.on('domwindow.beforeopen', function(e, data) {
+          ok(true, 'beforeopen - fired');
+          return equal($dialog[0], data.dialog[0], 'beforeopen - dialog was passed');
+        });
+        $domwin.on('domwindow.afteropen', function(e, data) {
+          ok(true, 'afteropen - fired');
+          equal($dialog[0], data.dialog[0], 'afteropen - dialog was passed');
+          ok(data.dialog.find('i').size() === 1, 'afteropen - found attached html in dialog');
+          return wait(0).done(function() {
+            return domwin.close();
+          });
+        });
+        $domwin.on('domwindow.beforeclose', function(e, data) {
+          ok(true, 'beforeclose - fired');
+          return equal($dialog[0], data.dialog[0], 'beforeclose - dialog was passed');
+        });
+        $domwin.on('domwindow.afterclose', function(e, data) {
+          ok(true, 'afterclose - fired');
+          equal($dialog[0], data.dialog[0], 'afterclose - dialog was passed');
+          if (!firstClose.isResolved()) {
+            return firstClose.resolve();
+          } else {
+            return secondClose.resolve();
+          }
+        });
+        firstClose.done(function() {
+          return domwin.open();
+        });
+        secondClose.done(function() {
+          return start();
+        });
+        return domwin.open();
+      });
+      return asyncTest('widgetstyle events ensure they work with api call', function() {
+        var $dialog, $domwin, api, domwin, firstClose, secondClose;
+        expect(18);
+        $dialog = $.ui.domwindowdialog.setup({
+          iddialog: true
+        });
+        $testdiv.html("<script type=\"text/x-dialogcontent\" id=\"foobar\"><i>foobar</i></script>");
+        api = win.domwindowApi;
+        $domwin = $testdiv.find('#foobar').domwindow();
+        domwin = $domwin.data('domwindow');
+        firstClose = $.Deferred();
+        secondClose = $.Deferred();
+        $domwin.on('domwindow.beforeopen', function(e, data) {
+          ok(true, 'beforeopen - fired');
+          return equal($dialog[0], data.dialog[0], 'beforeopen - dialog was passed');
+        });
+        $domwin.on('domwindow.afteropen', function(e, data) {
+          ok(true, 'afteropen - fired');
+          equal($dialog[0], data.dialog[0], 'afteropen - dialog was passed');
+          ok(data.dialog.find('i').size() === 1, 'afteropen - found attached html in dialog');
+          return wait(0).done(function() {
+            return api.close();
+          });
+        });
+        $domwin.on('domwindow.beforeclose', function(e, data) {
+          ok(true, 'beforeclose - fired');
+          return equal($dialog[0], data.dialog[0], 'beforeclose - dialog was passed');
+        });
+        $domwin.on('domwindow.afterclose', function(e, data) {
+          ok(true, 'afterclose - fired');
+          equal($dialog[0], data.dialog[0], 'afterclose - dialog was passed');
+          if (!firstClose.isResolved()) {
+            return firstClose.resolve();
+          } else {
+            return secondClose.resolve();
+          }
+        });
+        firstClose.done(function() {
+          return domwin.open();
+        });
+        secondClose.done(function() {
+          return start();
+        });
+        return api.open('foobar');
       });
     });
   })(jQuery, this);
