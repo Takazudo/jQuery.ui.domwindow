@@ -60,6 +60,26 @@
       ok not ns.widgets.$overlay, '$overlay was not found'
 
 
+    asyncTest 'hideoverlay events', ->
+
+      expect 4
+
+      $overlay = $.ui.hideoverlay.setup
+        showstart: ->
+          ok true, 'showstart fired'
+        showend: ->
+          ok true, 'showend fired'
+          console.log 1
+          wait(0).done -> $overlay.hideoverlay 'hide'
+        hidestart: ->
+          ok true, 'hidestart fired'
+        hideend: ->
+          ok true, 'showend fired'
+          start()
+
+      $overlay.hideoverlay 'show'
+
+
     test 'domwindowdialog setup', ->
 
       $.ui.domwindowdialog.setup()
@@ -120,6 +140,40 @@
           ok true, 'afterclose'
           equal data.dialog[0], $dialog[0], 'afterclose: dialog was passed'
           start()
+
+
+    asyncTest 'domwindowdialog events passed via jquery binding', ->
+
+      expect 12
+
+      $.ui.domwindowdialog.setup
+        ajaxdialog: true
+      api = win.domwindowApi
+      $dialog = ns.widgets.$dialog
+
+      $dialog.on 'domwindowdialog.beforeopen', (e, data) ->
+        ok true, 'beforeopen'
+        equal data.dialog[0], $dialog[0], 'beforeopen - data.dialog is dialogEl'
+        equal @, $dialog[0], 'beforeopen - this is dialogEl'
+
+      $dialog.on 'domwindowdialog.afteropen', (e, data) ->
+        ok true, 'afteropen'
+        equal data.dialog[0], $dialog[0], 'afteropen - data.dialog is dialogEl'
+        equal @, $dialog[0], 'afteropen - this is dialogEl'
+        wait(0).done -> api.close()
+
+      $dialog.on 'domwindowdialog.beforeclose', (e, data) ->
+        ok true, 'beforeclose'
+        equal data.dialog[0], $dialog[0], 'beforeclose - data.dialog is dialogEl'
+        equal @, $dialog[0], 'beforeclose - this is dialogEl'
+
+      $dialog.on 'domwindowdialog.afterclose', (e, data) ->
+        ok true, 'afterclose'
+        equal data.dialog[0], $dialog[0], 'afterclose - data.dialog is dialogEl'
+        equal @, $dialog[0], 'afterclose - this is dialogEl'
+        start()
+
+      api.open 'dialogfragment.html'
 
 
     asyncTest 'domwindowdialog events passed via setup', ->

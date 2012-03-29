@@ -44,6 +44,30 @@
         $.ui.hideoverlay.destroy();
         return ok(!ns.widgets.$overlay, '$overlay was not found');
       });
+      asyncTest('hideoverlay events', function() {
+        var $overlay;
+        expect(4);
+        $overlay = $.ui.hideoverlay.setup({
+          showstart: function() {
+            return ok(true, 'showstart fired');
+          },
+          showend: function() {
+            ok(true, 'showend fired');
+            console.log(1);
+            return wait(0).done(function() {
+              return $overlay.hideoverlay('hide');
+            });
+          },
+          hidestart: function() {
+            return ok(true, 'hidestart fired');
+          },
+          hideend: function() {
+            ok(true, 'showend fired');
+            return start();
+          }
+        });
+        return $overlay.hideoverlay('show');
+      });
       test('domwindowdialog setup', function() {
         $.ui.domwindowdialog.setup();
         ok(win.domwindowApi, 'api found');
@@ -106,6 +130,40 @@
             return start();
           }
         });
+      });
+      asyncTest('domwindowdialog events passed via jquery binding', function() {
+        var $dialog, api;
+        expect(12);
+        $.ui.domwindowdialog.setup({
+          ajaxdialog: true
+        });
+        api = win.domwindowApi;
+        $dialog = ns.widgets.$dialog;
+        $dialog.on('domwindowdialog.beforeopen', function(e, data) {
+          ok(true, 'beforeopen');
+          equal(data.dialog[0], $dialog[0], 'beforeopen - data.dialog is dialogEl');
+          return equal(this, $dialog[0], 'beforeopen - this is dialogEl');
+        });
+        $dialog.on('domwindowdialog.afteropen', function(e, data) {
+          ok(true, 'afteropen');
+          equal(data.dialog[0], $dialog[0], 'afteropen - data.dialog is dialogEl');
+          equal(this, $dialog[0], 'afteropen - this is dialogEl');
+          return wait(0).done(function() {
+            return api.close();
+          });
+        });
+        $dialog.on('domwindowdialog.beforeclose', function(e, data) {
+          ok(true, 'beforeclose');
+          equal(data.dialog[0], $dialog[0], 'beforeclose - data.dialog is dialogEl');
+          return equal(this, $dialog[0], 'beforeclose - this is dialogEl');
+        });
+        $dialog.on('domwindowdialog.afterclose', function(e, data) {
+          ok(true, 'afterclose');
+          equal(data.dialog[0], $dialog[0], 'afterclose - data.dialog is dialogEl');
+          equal(this, $dialog[0], 'afterclose - this is dialogEl');
+          return start();
+        });
+        return api.open('dialogfragment.html');
       });
       asyncTest('domwindowdialog events passed via setup', function() {
         var api;
