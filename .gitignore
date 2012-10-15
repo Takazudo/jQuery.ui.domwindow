@@ -41,3 +41,6 @@ _delivery_
 _dev_
 _update.php
 .htpasswd
+
+# compiles
+jquery.ui.domwindow.min.js

@@ -251,6 +251,10 @@
         @center()
       @
 
+    _appendFetchedData: (html) ->
+      @$el.empty().append html
+      @
+
     setOverlay: ($overlay) ->
       if not @options.overlay then return @
       @$overlay = $overlay
@@ -364,13 +368,13 @@
           defer = $.Deferred()
           src.apply @, [defer]
           $.when(defer, (wait delay)).done (data) =>
-            @$el.empty().append data
+            @_appendFetchedData data
             complete()
         when 'ajax'
           @overlay?.show()
           $.when((@_ajaxGet src), (wait delay)).done (args...) =>
             data = args[0][0]
-            @$el.empty().append data
+            @_appendFetchedData data
             complete()
         when 'iframe'
           @overlay?.show(true)
@@ -378,7 +382,7 @@
           complete()
         when 'id'
           @overlay?.show(true)
-          @$el.empty().append $target.html()
+          @_appendFetchedData $target.html()
           complete()
 
       currentOpen.kill = -> currentOpen.killed = true
