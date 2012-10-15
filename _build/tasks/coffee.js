@@ -15,7 +15,7 @@ module.exports = function(grunt){
     var dest = this.file.dest;
     var command = 'coffee --join ' + dest + ' --compile ' + srcs;
     var out = proc.exec(command, function(err, sout, serr){
-      if(err || sout || serr){
+      if(err){
         proc.exec("growlnotify -t 'COFFEE COMPILE ERROR!' -m '" + serr + "'");
         log.writeln('Scripts were failed to compile to ' + dest + '.');
         done(false);
