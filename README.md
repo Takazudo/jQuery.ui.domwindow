@@ -24,7 +24,7 @@ jQuery UI widget 1.9.1
 ## Browsers
 
 IE6+ and other new browsers.  
-Pretty sure about mobile phones.
+Maybe ok about mobile phones.
 
 ## License
 
