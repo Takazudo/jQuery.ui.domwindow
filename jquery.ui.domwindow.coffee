@@ -17,11 +17,57 @@
 
 
   # ============================================================
-  # browser detection
+  # handle position fixed problem
 
-  ie6 = do ->
+  ns.ie6 = do ->
     $el = $('<div><!--[if IE 6]><i></i><![endif]--></div>')
-    return if $el.find('i').size() then true else false
+    return if $el.find('i').length then true else false
+
+  # following block was from jQuery mobile.
+  # https://github.com/jquery/jquery-mobile/blob/master/js/widgets/fixedToolbar.js
+  
+  # Browser detection! Weeee, here we go...
+  # Unfortunately, position:fixed is costly, not to mention probably impossible, to feature-detect accurately.
+  # Some tests exist, but they currently return false results in critical devices and browsers, which could lead to a broken experience.
+  # Testing fixed positioning is also pretty obtrusive to page load, requiring injected elements and scrolling the window
+  # The following function serves to rule out some popular browsers with known fixed-positioning issues
+  # This is a plugin option like any other, so feel free to improve or overwrite it
+  ns.isBlackListedMobile = `function() {
+
+    var w = window,
+      ua = navigator.userAgent,
+      platform = navigator.platform,
+      // Rendering engine is Webkit, and capture major version
+      wkmatch = ua.match( /AppleWebKit\/([0-9]+)/ ),
+      wkversion = !!wkmatch && wkmatch[ 1 ],
+      ffmatch = ua.match( /Fennec\/([0-9]+)/ ),
+      ffversion = !!ffmatch && ffmatch[ 1 ],
+      operammobilematch = ua.match( /Opera Mobi\/([0-9]+)/ ),
+      omversion = !!operammobilematch && operammobilematch[ 1 ];
+
+    if(
+      // iOS 4.3 and older : Platform is iPhone/Pad/Touch and Webkit version is less than 534 (ios5)
+      ( ( platform.indexOf( "iPhone" ) > -1 || platform.indexOf( "iPad" ) > -1  || platform.indexOf( "iPod" ) > -1 ) && wkversion && wkversion < 534 ) ||
+      // Opera Mini
+      ( w.operamini && ({}).toString.call( w.operamini ) === "[object OperaMini]" ) ||
+      ( operammobilematch && omversion < 7458 )	||
+      //Android lte 2.1: Platform is Android and Webkit version is less than 533 (Android 2.2)
+      ( ua.indexOf( "Android" ) > -1 && wkversion && wkversion < 533 ) ||
+      // Firefox Mobile before 6.0 -
+      ( ffversion && ffversion < 6 ) ||
+      // WebOS less than 3
+      ( "palmGetResource" in window && wkversion && wkversion < 534 )	||
+      // MeeGo
+      ( ua.indexOf( "MeeGo" ) > -1 && ua.indexOf( "NokiaBrowser/8.5.0" ) > -1 ) ) {
+      return true;
+    }
+
+    return false;
+
+  }`
+
+  # at last, can I use position fixed or not?
+  ns.positionFixedUnavailable = ns.ie6 or ns.isBlackListedMobile()
 
 
   # ============================================================
@@ -58,6 +104,7 @@
       spinnersrc: null
       maxopacity: 0.8
       bgiframe: false
+      forceabsolute: ns.positionFixedUnavailable or false
       spinjs: false
       spinjs_options:
         color:'#fff'
@@ -75,7 +122,7 @@
       @$bg = $('.ui-hideoverlay-bg', @$el)
       @_preloadSpinner()
       @_eventify()
-      @_handleIE6()
+      @_handleLegacy()
       @
 
     _attachSpinjs: ->
@@ -83,17 +130,18 @@
       if not @_spinning then return @
       (new Spinner @options.spinjs_options).spin(@$spinner[0])
 
-    _handleIE6: ->
-      if not ie6 then return @
+    _handleLegacy: ->
+      return @ unless @options.forceabsolute
+      @$el.css 'position', 'absolute'
       @_resize()
       if @options.bgiframe and $.fn.bgiframe
         @$el.bgiframe()
       @
 
     _resize: ->
-      if not ie6 then return @
-      w = $win.width()
-      h = $win.height()
+      return @ unless @options.forceabsolute
+      w = viewportW()
+      h = viewportH()
       @$el.css
         width: w
         height: h
@@ -104,7 +152,7 @@
         height: h
 
     _eventify: ->
-      if not ie6 then return @
+      return @ unless @options.forceabsolute
       $win.bind 'resize scroll', => @_resize()
       @
 
@@ -228,6 +276,7 @@
       iddialog: false
       overlay: true
       overlayclickclose: true
+      forceabsolute: ns.positionFixedUnavailable or false
     widgetEventPrefix: 'domwindowdialog.'
 
     _create: ->
@@ -297,7 +346,7 @@
           # when small - put the very center
           props.top = round(vpH/2) - round(elH/2)
           props.left = round(vpW/2) - round(elW/2)
-          if ie6
+          if @options.forceabsolute
             props.position = 'absolute'
             props.top += offY
             props.left += offX
@@ -347,6 +396,8 @@
         @$lastIdTarget = $target # store target to know close events
         if $target.is(':ui-domwindow')
           o = $.extend {}, $target.domwindow('createApiOpenOptions'), o
+        else
+          @$lastIdTarget = null
       else
         @$lastIdTarget = null
 
@@ -462,7 +513,7 @@
 
   genOverlayOptions = (options) ->
     ret = {}
-    if not options then return ret
+    return ret unless options
     $.each $.ui.hideoverlay.prototype.options, (key) ->
       if options[key] isnt undefined
         ret[key] = options[key]

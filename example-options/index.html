@@ -41,7 +41,7 @@ td{
 	width:100%;
 }
 </style>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 <script src="../lib/jquery.ui.widget.js"></script>
 <script src="../jquery.ui.domwindow.js"></script>
 </head>
@@ -160,6 +160,44 @@ $(function(){
         });
     });
     $('#options3-open').click(function(){
+        domwindowApi.open('dialog1.html');
+    });
+});</pre>
+
+<h2>forceabsolute</h2>
+<p>Dialog positioning uses position 'fixed'. But with this option, it forces dialogs to be positioned by 'absolute'. 'false' as default. If you don't specify this option, old mobile browsers and IE6 that doesn't support position fixed get 'true' automatically.</p>
+<button id="options4-setup1">setup as true</button> or 
+<button id="options4-setup2">setup as false</button> then 
+<button id="options4-open">let me try ajaxdialog</button>
+<script>
+$(function(){
+	$('#options4-setup1').click(function(){
+		$.ui.domwindowdialog.setup({
+			forceabsolute: true
+		});
+	});
+	$('#options4-setup2').click(function(){
+		$.ui.domwindowdialog.setup({
+			forceabsolute: false
+		});
+	});
+	$('#options4-open').click(function(){
+		domwindowApi.open('dialog1.html');
+	});
+});
+</script>
+<pre>$(function(){
+    $('#options4-setup1').click(function(){
+        $.ui.domwindowdialog.setup({
+            forceabsolute: true
+        });
+    });
+    $('#options4-setup2').click(function(){
+        $.ui.domwindowdialog.setup({
+            forceabsolute: false
+        });
+    });
+    $('#options4-open').click(function(){
         domwindowApi.open('dialog1.html');
     });
 });</pre>

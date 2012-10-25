@@ -6,6 +6,8 @@
  */
 module.exports = function(grunt){
 
+  grunt.loadTasks('gruntTasks');
+
   grunt.initConfig({
     pkg: '<json:info.json>',
     meta: {
@@ -16,29 +18,28 @@ module.exports = function(grunt){
         ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */'
     },
     concat: {
-      '../jquery.ui.domwindow.js': [ '<banner>', '../jquery.ui.domwindow.js' ]
+      'jquery.ui.domwindow.js': [ '<banner>', 'jquery.ui.domwindow.js' ]
     },
     watch: {
       files: [
-        '../jquery.ui.domwindow.coffee',
-        '../tests/qunit/test/test.coffee'
+        'jquery.ui.domwindow.coffee',
+        'tests/qunit/test/test.coffee'
       ],
-      tasks: 'coffee concat notifyOK'
+      tasks: 'coffee concat uglify notifyOK'
     },
     coffee: {
-      '../jquery.ui.domwindow.js':  [
-        '../jquery.ui.domwindow.coffee'
+      'jquery.ui.domwindow.js':  [
+        'jquery.ui.domwindow.coffee'
       ],
-      '../tests/qunit/test/test.js':  [
-        '../tests/qunit/test/test.coffee'
+      'tests/qunit/test/test.js':  [
+        'tests/qunit/test/test.coffee'
       ]
     },
     uglify: {
-      '../jquery.ui.domwindow.min.js': '../jquery.ui.domwindow.js'
+      'jquery.ui.domwindow.min.js': 'jquery.ui.domwindow.js'
     }
   });
 
-  grunt.loadTasks('tasks');
-  grunt.registerTask('default', 'coffee concat notifyOK');
+  grunt.registerTask('default', 'coffee concat uglify notifyOK');
 
 };
