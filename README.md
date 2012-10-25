@@ -18,13 +18,13 @@ See demos
 
 ## Depends
 
-jQuery 1.7.1  
-jQuery UI widget 1.8.16  
+jQuery 1.8.12  
+jQuery UI widget 1.9.1  
 
 ## Browsers
 
 IE6+ and other new browsers.  
-Not sure around mobile ones.
+Pretty sure about mobile phones.
 
 ## License
 
