@@ -1,5 +1,11 @@
 # jQuery.ui.domwindow - changelog
 
+## v.0.2.0
+
+* updated build tool to Grunt v0.4.0
+* tested with jQuery 1.9.1
+* tweaked for jQuery UI 1.10.1
+
 ## v.0.1.4
 
 * added 'forceabsolute' option. Mobile browsers which don't support position fixed have fallbacks to absolute dialog automatically.
