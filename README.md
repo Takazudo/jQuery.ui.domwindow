@@ -26,6 +26,10 @@ jQuery UI widget 1.9.1
 IE6+ and other new browsers.  
 Maybe ok about mobile phones.
 
+## How to build
+
+Use Grunt.
+
 ## License
 
 Copyright (c) 2012 "Takazudo" Takeshi Takatsudo  
@@ -36,7 +40,7 @@ Licensed under the MIT license.
 This scirpt was developed with following things.  
 
  * [CoffeeScript][coffeescript]
- * [grunt][grunt]
+ * [Grunt][Grunt]
 
 [coffeescript]: http://coffeescript.org/ "CoffeeScript"
-[grunt]: https://github.com/cowboy/grunt "grunt"
+[Grunt]: http://gruntjs.com/ "Grunt"
