@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jQuery.ui.domwindow</title>
+<link rel="stylesheet" href="../domwindow.css">
+<style>
+body{
+	text-align:center;
+	font-family:sans-serif;
+	line-height:1.5;
+}
+#all{
+	text-align:left;
+	margin:20px;
+	background:#ddd;
+	padding:30px;
+	font-size:12px;
+}
+.ui-domwindowdialog{
+	background:#fff;
+}
+pre{
+	border:1px solid #000;
+	padding:10px;
+	font-size:15px;
+	font-family:monospace;
+	overflow-x:auto;
+}
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="../lib/jquery.ui.widget.js"></script>
+<script src="../jquery.ui.domwindow.js"></script>
+<script>
+if (!window.console){
+	window.console = {}
+	window.console.log = function(arg){
+		alert(arg);
+
+	};
+}
+$(function(){
+	$.ui.domwindowdialog.setup({
+		width: 600, // dialog width
+		height: 300, // dialog height
+		spinnersrc: '../spinner.gif' // specify this for preload
+	});
+});
+</script>
+</head>
+<body><div id="all">
+<h1><a href="https://github.com/Takazudo/jQuery.ui.domwindow">jQuery.ui.domwindow</a> - demo - flexiblesize</h1>
+<p>width: $window.width() - 20<br>height: $window.height() - 20</p>
+<p>But these do not get over width: 750 / height: 450.</p>
+<p>Resize your browser then try.</p>
+<h2>ajaxdialog</h2>
+<button id="open">open</button>
+<script>
+$(function(){
+
+	var $window = $(window);
+	var api = window.domwindowApi;
+
+	$('#open').on('click', function(){
+
+		var width = $window.width() - 20;
+		var height = $window.height() - 20;
+
+		// handle max,min width/height
+		if(width > 750) { width = 750; }
+		if(height > 450) { height = 450; }
+
+		api.open('dialog1.html', {
+			width: width,
+			height: height,
+			fixedMinY: 0,
+			afteropen: function(e, data){
+				console.log('afteropen!', data.dialog);
+			},
+		});
+
+	});
+});
+</script>
+<pre>$(function(){
+
+  var $window = $(window);
+  var api = window.domwindowApi;
+
+  $('#open').on('click', function(){
+
+    var width = $window.width() - 20;
+    var height = $window.height() - 20;
+
+    // handle max,min width/height
+    if(width &gt; 750) { width = 750; }
+    if(height &gt; 450) { height = 450; }
+
+    api.open('dialog1.html', {
+      width: width,
+      height: height,
+      fixedMinY: 0,
+      afteropen: function(e, data){
+        console.log('afteropen!', data.dialog);
+      },
+    });
+
+  });
+});</pre>
+
+</div></body>
+</html>
