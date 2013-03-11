@@ -124,6 +124,8 @@
       api = win.domwindowApi
       $dialog = ns.widgets.$dialog
 
+      console.log win.domwindowApi
+
       api.open 'dialogfragment.html',
         beforeopen: (e, data) ->
           ok true, 'beforeopen'
@@ -384,7 +386,7 @@
         <script type="text/x-dialogcontent" id="foobar"><i>foobar</i></script>
       """
       $domwin = $testdiv.find('#foobar').domwindow()
-      domwin = $domwin.data 'domwindow'
+      domwin = $domwin.data 'uiDomwindow'
 
       firstClose = $.Deferred()
       secondClose = $.Deferred()
@@ -427,7 +429,7 @@
       """
       api = win.domwindowApi
       $domwin = $testdiv.find('#foobar').domwindow()
-      domwin = $domwin.data 'domwindow'
+      domwin = $domwin.data 'uiDomwindow'
 
       firstClose = $.Deferred()
       secondClose = $.Deferred()

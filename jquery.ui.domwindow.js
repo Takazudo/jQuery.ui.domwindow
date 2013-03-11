@@ -353,7 +353,7 @@
           return this;
         }
         this.$overlay = $overlay;
-        this.overlay = $overlay.data('hideoverlay');
+        this.overlay = $overlay.data('uiHideoverlay');
         if (this.options.overlayclickclose) {
           this.$overlay.bind('click', function() {
             return _this.close();
@@ -673,7 +673,7 @@
 
       function DomwindowApi($dialog) {
         this.$dialog = $dialog;
-        this.dialog = this.$dialog.data('domwindowdialog');
+        this.dialog = this.$dialog.data('uiDomwindowdialog');
       }
 
       DomwindowApi.prototype.open = function() {

@@ -307,7 +307,7 @@ do ($=jQuery, win=window, doc=document) ->
     setOverlay: ($overlay) ->
       if not @options.overlay then return @
       @$overlay = $overlay
-      @overlay = $overlay.data 'hideoverlay'
+      @overlay = $overlay.data 'uiHideoverlay'
       if @options.overlayclickclose
         @$overlay.bind 'click', => @close()
       @
@@ -550,7 +550,7 @@ do ($=jQuery, win=window, doc=document) ->
 
   class DomwindowApi
     constructor: (@$dialog) ->
-      @dialog = @$dialog.data 'domwindowdialog' # widget instance
+      @dialog = @$dialog.data 'uiDomwindowdialog' # widget instance
     open: (args...) ->
       @dialog.open.apply @dialog, args
     close: (args...) ->

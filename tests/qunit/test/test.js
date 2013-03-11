@@ -107,6 +107,7 @@
         });
         api = win.domwindowApi;
         $dialog = ns.widgets.$dialog;
+        console.log(win.domwindowApi);
         return api.open('dialogfragment.html', {
           beforeopen: function(e, data) {
             ok(true, 'beforeopen');
@@ -422,7 +423,7 @@
         $dialog = $.ui.domwindowdialog.setup();
         $testdiv.html("<script type=\"text/x-dialogcontent\" id=\"foobar\"><i>foobar</i></script>");
         $domwin = $testdiv.find('#foobar').domwindow();
-        domwin = $domwin.data('domwindow');
+        domwin = $domwin.data('uiDomwindow');
         firstClose = $.Deferred();
         secondClose = $.Deferred();
         $domwin.on('domwindow.beforeopen', function(e, data) {
@@ -467,7 +468,7 @@
         $testdiv.html("<script type=\"text/x-dialogcontent\" id=\"foobar\"><i>foobar</i></script>");
         api = win.domwindowApi;
         $domwin = $testdiv.find('#foobar').domwindow();
-        domwin = $domwin.data('domwindow');
+        domwin = $domwin.data('uiDomwindow');
         firstClose = $.Deferred();
         secondClose = $.Deferred();
         $domwin.on('domwindow.beforeopen', function(e, data) {
