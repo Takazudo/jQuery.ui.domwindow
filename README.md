@@ -18,8 +18,8 @@ See demos
 
 ## Depends
 
-jQuery 1.8.12  
-jQuery UI widget 1.9.1  
+jQuery 1.9.1  
+jQuery UI widget 1.10.1  
 
 ## Browsers
 
