@@ -39,13 +39,6 @@ if (!window.console){
 
 	};
 }
-$(function(){
-	$.ui.domwindowdialog.setup({
-		width: 600, // dialog width
-		height: 300, // dialog height
-		spinnersrc: '../spinner.gif' // specify this for preload
-	});
-});
 </script>
 </head>
 <body><div id="all">
@@ -59,6 +52,12 @@ $(function(){
 $(function(){
 
 	var $window = $(window);
+
+	$.ui.domwindowdialog.setup({
+		fixedMinY: 10,
+		spinnersrc: '../spinner.gif' // specify this for preload
+	});
+
 	var api = window.domwindowApi;
 
 	$('#open').on('click', function(){
@@ -73,7 +72,6 @@ $(function(){
 		api.open('dialog1.html', {
 			width: width,
 			height: height,
-			fixedMinY: 0,
 			afteropen: function(e, data){
 				console.log('afteropen!', data.dialog);
 			},
@@ -85,6 +83,12 @@ $(function(){
 <pre>$(function(){
 
   var $window = $(window);
+
+  $.ui.domwindowdialog.setup({
+    fixedMinY: 10,
+    spinnersrc: '../spinner.gif' // specify this for preload
+  });
+
   var api = window.domwindowApi;
 
   $('#open').on('click', function(){
@@ -99,7 +103,6 @@ $(function(){
     api.open('dialog1.html', {
       width: width,
       height: height,
-      fixedMinY: 0,
       afteropen: function(e, data){
         console.log('afteropen!', data.dialog);
       },

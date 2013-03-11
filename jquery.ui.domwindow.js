@@ -338,7 +338,7 @@
           e.preventDefault();
           return _this.close();
         });
-        $win.on('resize', function() {
+        $win.on('resize orientationchange', function() {
           return _this.center();
         });
         return this;
@@ -406,6 +406,7 @@
           _this = this;
         o = options;
         this._isOpen = true;
+        console.log(o);
         this._currentOpen = currentOpen = {};
         currentOpen.defer = $.Deferred();
         complete = function() {

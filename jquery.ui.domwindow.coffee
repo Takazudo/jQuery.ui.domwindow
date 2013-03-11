@@ -296,7 +296,7 @@ do ($=jQuery, win=window, doc=document) ->
       $doc.on 'click', @options.selector_close, (e) =>
         e.preventDefault()
         @close()
-      $win.on 'resize', =>
+      $win.on 'resize orientationchange', =>
         @center()
       @
 
@@ -361,6 +361,8 @@ do ($=jQuery, win=window, doc=document) ->
 
       o = options
       @_isOpen = true
+
+      console.log o
 
       @_currentOpen = currentOpen = {}
       currentOpen.defer = $.Deferred()
