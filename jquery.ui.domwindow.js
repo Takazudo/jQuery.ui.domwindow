@@ -748,6 +748,6 @@
         return domwindowApi.close();
       }
     });
-  })(jQuery, this, this.document);
+  })(jQuery, window, document);
 
 }).call(this);

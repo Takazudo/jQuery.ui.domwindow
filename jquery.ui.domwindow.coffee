@@ -1,4 +1,4 @@
-(($, win, doc) ->
+do ($=jQuery, win=window, doc=document) ->
 
   $win = $(win)
   $doc = $(doc)
@@ -596,5 +596,3 @@
       domwindowApi.open @_id, @createApiOpenOptions()
     close: ->
       domwindowApi.close()
-
-) jQuery, @, @document
