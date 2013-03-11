@@ -11,6 +11,7 @@ Just a simple ajax/iframe/id-based fake dialog.
 * [deferredopen](http://takazudo.github.com/jQuery.ui.domwindow/example-deferredopen/)
 * [bgiframe](http://takazudo.github.com/jQuery.ui.domwindow/example-bgiframe/)
 * [spinjs](http://takazudo.github.com/jQuery.ui.domwindow/example-spinjs/)
+* [flexibleresize](http://takazudo.github.com/jQuery.ui.domwindow/example-flexiblesize/)
 
 ## Usage
 
