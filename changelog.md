@@ -1,5 +1,9 @@
 # jQuery.ui.domwindow - changelog
 
+## v.0.2.1
+
+* removed console.log
+
 ## v.0.2.0
 
 * updated build tool to Grunt v0.4.0
