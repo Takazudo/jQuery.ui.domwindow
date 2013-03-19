@@ -1,5 +1,5 @@
 /*! jQuery.ui.domwindow (https://github.com/Takazudo/jQuery.ui.domwindow)
- * lastupdate: 2013-03-11
+ * lastupdate: 2013-03-19
  * version: 0.2.0
  * author: 'Takazudo' Takeshi Takatsudo <takazudo@gmail.com>
  * License: MIT */
@@ -406,7 +406,6 @@
           _this = this;
         o = options;
         this._isOpen = true;
-        console.log(o);
         this._currentOpen = currentOpen = {};
         currentOpen.defer = $.Deferred();
         complete = function() {

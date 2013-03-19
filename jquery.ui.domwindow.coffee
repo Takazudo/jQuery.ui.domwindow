@@ -362,8 +362,6 @@ do ($=jQuery, win=window, doc=document) ->
       o = options
       @_isOpen = true
 
-      console.log o
-
       @_currentOpen = currentOpen = {}
       currentOpen.defer = $.Deferred()
 
