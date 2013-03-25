@@ -1,6 +1,6 @@
 /*! jQuery.ui.domwindow (https://github.com/Takazudo/jQuery.ui.domwindow)
- * lastupdate: 2013-03-19
- * version: 0.2.1
+ * lastupdate: 2013-03-25
+ * version: 0.2.2
  * author: 'Takazudo' Takeshi Takatsudo <takazudo@gmail.com>
  * License: MIT */
 (function() {
@@ -312,7 +312,8 @@
         iddialog: false,
         overlay: true,
         overlayclickclose: true,
-        forceabsolute: ns.positionFixedUnavailable || false
+        forceabsolute: ns.positionFixedUnavailable || false,
+        centeronresize: true
       },
       widgetEventPrefix: 'domwindowdialog.',
       _create: function() {
@@ -339,7 +340,9 @@
           return _this.close();
         });
         $win.on('resize orientationchange', function() {
-          return _this.center();
+          if (_this.options.centeronresize) {
+            return _this.center();
+          }
         });
         return this;
       },

@@ -277,6 +277,7 @@ do ($=jQuery, win=window, doc=document) ->
       overlay: true
       overlayclickclose: true
       forceabsolute: ns.positionFixedUnavailable or false
+      centeronresize: true
     widgetEventPrefix: 'domwindowdialog.'
 
     _create: ->
@@ -297,7 +298,7 @@ do ($=jQuery, win=window, doc=document) ->
         e.preventDefault()
         @close()
       $win.on 'resize orientationchange', =>
-        @center()
+        @center() if @options.centeronresize
       @
 
     _appendFetchedData: (html) ->

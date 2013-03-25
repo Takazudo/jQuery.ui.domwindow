@@ -1,5 +1,9 @@
 # jQuery.ui.domwindow - changelog
 
+## v.0.2.2
+
+* implemented `centeronresize` option
+
 ## v.0.2.1
 
 * removed console.log
