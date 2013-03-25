@@ -278,6 +278,7 @@ do ($=jQuery, win=window, doc=document) ->
       overlayclickclose: true
       forceabsolute: ns.positionFixedUnavailable or false
       centeronresize: true
+      tandbmargintodecideposition: 50
     widgetEventPrefix: 'domwindowdialog.'
 
     _create: ->
@@ -325,7 +326,7 @@ do ($=jQuery, win=window, doc=document) ->
       offX = offsetX()
 
       isLeftOver = vpW < elW
-      isBottomOver = vpH < elH + 50
+      isBottomOver = vpH < elH + @options.tandbmargintodecideposition
 
       if isLeftOver
         props.left = 0 # bring it back to 0

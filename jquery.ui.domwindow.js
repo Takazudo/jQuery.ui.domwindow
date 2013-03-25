@@ -313,7 +313,8 @@
         overlay: true,
         overlayclickclose: true,
         forceabsolute: ns.positionFixedUnavailable || false,
-        centeronresize: true
+        centeronresize: true,
+        tandbmargintodecideposition: 50
       },
       widgetEventPrefix: 'domwindowdialog.',
       _create: function() {
@@ -374,7 +375,7 @@
         offY = offsetY();
         offX = offsetX();
         isLeftOver = vpW < elW;
-        isBottomOver = vpH < elH + 50;
+        isBottomOver = vpH < elH + this.options.tandbmargintodecideposition;
         if (isLeftOver) {
           props.left = 0;
           if (isBottomOver) {
