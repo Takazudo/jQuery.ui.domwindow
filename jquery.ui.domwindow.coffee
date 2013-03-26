@@ -153,7 +153,7 @@ do ($=jQuery, win=window, doc=document) ->
 
     _eventify: ->
       return @ unless @options.forceabsolute
-      $win.bind 'resize scroll', => @_resize()
+      $win.bind 'resize scroll orientationchange', => @_resize()
       @
 
     _showOverlayEl: (woSpinner) ->
@@ -298,8 +298,10 @@ do ($=jQuery, win=window, doc=document) ->
       $doc.on 'click', @options.selector_close, (e) =>
         e.preventDefault()
         @close()
-      $win.on 'resize orientationchange', =>
+      $win.on 'resize', =>
         @center() if @options.centeronresize
+      $win.on 'orientationchange', =>
+        @center()
       @
 
     _appendFetchedData: (html) ->

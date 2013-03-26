@@ -1,6 +1,6 @@
 /*! jQuery.ui.domwindow (https://github.com/Takazudo/jQuery.ui.domwindow)
- * lastupdate: 2013-03-25
- * version: 0.2.3
+ * lastupdate: 2013-03-26
+ * version: 0.2.4
  * author: 'Takazudo' Takeshi Takatsudo <takazudo@gmail.com>
  * License: MIT */
 (function() {
@@ -156,7 +156,7 @@
         if (!this.options.forceabsolute) {
           return this;
         }
-        $win.bind('resize scroll', function() {
+        $win.bind('resize scroll orientationchange', function() {
           return _this._resize();
         });
         return this;
@@ -340,10 +340,13 @@
           e.preventDefault();
           return _this.close();
         });
-        $win.on('resize orientationchange', function() {
+        $win.on('resize', function() {
           if (_this.options.centeronresize) {
             return _this.center();
           }
+        });
+        $win.on('orientationchange', function() {
+          return _this.center();
         });
         return this;
       },

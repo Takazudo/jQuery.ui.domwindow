@@ -1,5 +1,9 @@
 # jQuery.ui.domwindow - changelog
 
+## v.0.2.4
+
+* handled orientationchange more carefully.
+
 ## v.0.2.3
 
 * implemented `tandbmargintodecideposition` option. This option value is used to decide whether the dialog should be fixed or absolute.
