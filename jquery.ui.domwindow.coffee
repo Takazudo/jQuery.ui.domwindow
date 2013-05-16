@@ -279,6 +279,7 @@ do ($=jQuery, win=window, doc=document) ->
       overlayclickclose: true
       forceabsolute: ns.positionFixedUnavailable or false
       centeronresize: true
+      centeronscroll: false
       tandbmargintodecideposition: 50
     widgetEventPrefix: 'domwindowdialog.'
 
@@ -301,6 +302,8 @@ do ($=jQuery, win=window, doc=document) ->
         @close()
       $win.on 'resize', =>
         @center() if @options.centeronresize
+      $win.on 'scroll', =>
+        @center() if @options.centeronscroll
       $win.on 'orientationchange', =>
         @center()
       @

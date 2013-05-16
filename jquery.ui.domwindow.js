@@ -1,5 +1,5 @@
 /*! jQuery.ui.domwindow (https://github.com/Takazudo/jQuery.ui.domwindow)
- * lastupdate: 2013-05-16
+ * lastupdate: 2013-05-17
  * version: 0.3.0
  * author: 'Takazudo' Takeshi Takatsudo <takazudo@gmail.com>
  * License: MIT */
@@ -315,6 +315,7 @@
         overlayclickclose: true,
         forceabsolute: ns.positionFixedUnavailable || false,
         centeronresize: true,
+        centeronscroll: false,
         tandbmargintodecideposition: 50
       },
       widgetEventPrefix: 'domwindowdialog.',
@@ -343,6 +344,11 @@
         });
         $win.on('resize', function() {
           if (_this.options.centeronresize) {
+            return _this.center();
+          }
+        });
+        $win.on('scroll', function() {
+          if (_this.options.centeronscroll) {
             return _this.center();
           }
         });
