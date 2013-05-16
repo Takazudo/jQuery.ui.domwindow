@@ -206,5 +206,65 @@ $(function(){
 	</div>
 </script>
 
+<h2>strdialog</h2>
+<button id="apiex-strdialog-open">open</button>
+<script>
+$(function(){
+	var str = [
+		'<div style="padding:30px">',
+		'	<h2>iddialog example</h2>',
+		'	<p><a class="apply-domwindow-close" href="#">close</a></p>',
+		'</div>'
+	].join('');
+	$('#apiex-strdialog-open').click(str, function(){
+		window.domwindowApi.open('iddialogcontent', {
+			strdialog: true,
+			width: 800,
+			height: 800,
+			beforeopen: function(e, data){
+				console.log('beforeopen!', data.dialog);
+			},
+			afteropen: function(e, data){
+				console.log('afteropen!', data.dialog);
+			},
+			beforeclose: function(e, data){
+				console.log('beforeclose!', data.dialog);
+			},
+			afterclose: function(e, data){
+				console.log('afterclose!', data.dialog);
+			}
+		});
+	});
+});
+</script>
+<pre>$(function(){
+    var str = [
+        '&lt;div style=&quot;padding:30px&quot;&gt;',
+        '    &lt;h2&gt;iddialog example&lt;/h2&gt;',
+        '    &lt;p&gt;&lt;a class=&quot;apply-domwindow-close&quot; href=&quot;#&quot;&gt;close&lt;/a&gt;&lt;/p&gt;',
+        '&lt;/div&gt;'
+    ].join('');
+    $('#apiex-strdialog-open').click(str, function(){
+        window.domwindowApi.open('iddialogcontent', {
+            strdialog: true,
+            width: 800,
+            height: 800,
+            beforeopen: function(e, data){
+                console.log('beforeopen!', data.dialog);
+            },
+            afteropen: function(e, data){
+                console.log('afteropen!', data.dialog);
+            },
+            beforeclose: function(e, data){
+                console.log('beforeclose!', data.dialog);
+            },
+            afterclose: function(e, data){
+                console.log('afterclose!', data.dialog);
+            }
+        });
+    });
+});</pre>
+
+
 </div></body>
 </html>

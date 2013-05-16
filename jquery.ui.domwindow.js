@@ -1,5 +1,5 @@
 /*! jQuery.ui.domwindow (https://github.com/Takazudo/jQuery.ui.domwindow)
- * lastupdate: 2013-03-26
+ * lastupdate: 2013-05-16
  * version: 0.2.4
  * author: 'Takazudo' Takeshi Takatsudo <takazudo@gmail.com>
  * License: MIT */
@@ -310,6 +310,7 @@
         ajaxdialog_mindelay: 300,
         iframedialog: false,
         iddialog: false,
+        strdialog: false,
         overlay: true,
         overlayclickclose: true,
         forceabsolute: ns.positionFixedUnavailable || false,
@@ -409,7 +410,7 @@
         return this;
       },
       open: function(src, options) {
-        var $target, complete, currentOpen, defer, delay, dialogType, h, o, w, _ref, _ref1, _ref2, _ref3,
+        var $target, complete, currentOpen, defer, delay, dialogType, h, o, w, _ref, _ref1, _ref2, _ref3, _ref4,
           _this = this;
         o = options;
         this._isOpen = true;
@@ -451,6 +452,9 @@
             if (this.options.iddialog) {
               dialogType = 'id';
             }
+            if (this.options.strdialog) {
+              dialogType = 'str';
+            }
             if (o != null ? o.ajaxdialog : void 0) {
               dialogType = 'ajax';
             }
@@ -459,6 +463,9 @@
             }
             if (o != null ? o.iddialog : void 0) {
               dialogType = 'id';
+            }
+            if (o != null ? o.strdialog : void 0) {
+              dialogType = 'str';
             }
           }
         }
@@ -520,6 +527,13 @@
               _ref3.show(true);
             }
             this._appendFetchedData($target.html());
+            complete();
+            break;
+          case 'str':
+            if ((_ref4 = this.overlay) != null) {
+              _ref4.show();
+            }
+            this._appendFetchedData(src);
             complete();
         }
         currentOpen.kill = function() {

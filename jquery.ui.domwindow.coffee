@@ -274,6 +274,7 @@ do ($=jQuery, win=window, doc=document) ->
       ajaxdialog_mindelay: 300
       iframedialog: false
       iddialog: false
+      strdialog: false
       overlay: true
       overlayclickclose: true
       forceabsolute: ns.positionFixedUnavailable or false
@@ -389,9 +390,11 @@ do ($=jQuery, win=window, doc=document) ->
           if @options.ajaxdialog then dialogType = 'ajax'
           if @options.iframedialog then dialogType = 'iframe'
           if @options.iddialog then dialogType = 'id'
+          if @options.strdialog then dialogType = 'str'
           if o?.ajaxdialog then dialogType = 'ajax'
           if o?.iframedialog then dialogType = 'iframe'
           if o?.iddialog then dialogType = 'id'
+          if o?.strdialog then dialogType = 'str'
 
       # if domwindow widget was attached to the target,
       # invoke its events when the dialog was opened or closed.
@@ -438,6 +441,10 @@ do ($=jQuery, win=window, doc=document) ->
         when 'id'
           @overlay?.show(true)
           @_appendFetchedData $target.html()
+          complete()
+        when 'str'
+          @overlay?.show()
+          @_appendFetchedData src
           complete()
 
       currentOpen.kill = -> currentOpen.killed = true
