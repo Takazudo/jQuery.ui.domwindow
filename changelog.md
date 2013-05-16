@@ -1,5 +1,9 @@
 # jQuery.ui.domwindow - changelog
 
+## v.0.3.1
+
+* added `centeronscroll` option.
+
 ## v.0.3.0
 
 * added `strdialog` option.
