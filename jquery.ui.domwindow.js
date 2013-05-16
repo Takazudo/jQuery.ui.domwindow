@@ -1,6 +1,6 @@
 /*! jQuery.ui.domwindow (https://github.com/Takazudo/jQuery.ui.domwindow)
  * lastupdate: 2013-05-16
- * version: 0.2.4
+ * version: 0.3.0
  * author: 'Takazudo' Takeshi Takatsudo <takazudo@gmail.com>
  * License: MIT */
 (function() {
