@@ -388,11 +388,16 @@ do ($=jQuery, win=window, doc=document) ->
 
     open: (src, options) ->
 
-      o = options
       @_isOpen = true
 
+      @_currentOpen?.kill()
+      
       @_currentOpen = currentOpen = {}
       currentOpen.defer = $.Deferred()
+      
+      originalOptions = @options
+      currentOpen.restoreOriginalOptions = ->
+        @options = originalOptions
 
       complete = =>
         if currentOpen.killed then return
@@ -415,10 +420,10 @@ do ($=jQuery, win=window, doc=document) ->
           if @options.iframedialog then dialogType = 'iframe'
           if @options.iddialog then dialogType = 'id'
           if @options.strdialog then dialogType = 'str'
-          if o?.ajaxdialog then dialogType = 'ajax'
-          if o?.iframedialog then dialogType = 'iframe'
-          if o?.iddialog then dialogType = 'id'
-          if o?.strdialog then dialogType = 'str'
+          if options?.ajaxdialog then dialogType = 'ajax'
+          if options?.iframedialog then dialogType = 'iframe'
+          if options?.iddialog then dialogType = 'id'
+          if options?.strdialog then dialogType = 'str'
 
       # if domwindow widget was attached to the target,
       # invoke its events when the dialog was opened or closed.
@@ -426,16 +431,18 @@ do ($=jQuery, win=window, doc=document) ->
         $target = $('#' + src)
         @$lastIdTarget = $target # store target to know close events
         if $target.is(':ui-domwindow')
-          o = $.extend {}, $target.domwindow('createApiOpenOptions'), o
+          options = $.extend {}, $target.domwindow('createApiOpenOptions'), options
         else
           @$lastIdTarget = null
       else
         @$lastIdTarget = null
 
-      @_attachOneTimeEvents o, 'open', currentOpen
+      if options
+        @_applyOneTimeOptions options, currentOpen
+      @_attachOneTimeEvents options, 'open', currentOpen
 
-      w = o?.width or @options.width
-      h = o?.height or @options.height
+      w = @options.width
+      h = @options.height
       @$el.css
         width: w
         height: h
@@ -471,24 +478,52 @@ do ($=jQuery, win=window, doc=document) ->
           @_appendFetchedData src
           complete()
 
-      currentOpen.kill = -> currentOpen.killed = true
+      currentOpen.kill = ->
+        currentOpen.restoreOriginalOptions()
+        currentOpen.killed = true
+        return
       return currentOpen
 
     close: (options) ->
+
       defer = $.Deferred()
       if not @_isOpen then return this
       if @$lastIdTarget
         options = $.extend {}, options, @$lastIdTarget.domwindow('createApiCloseOptions')
-      @_attachOneTimeEvents options, 'close'
+      @_attachOneTimeEvents options
       @_currentOpen?.kill()
       @_isOpen = false
       @_trigger 'beforeclose', {}, { dialog: @$el }
       wait(0).done =>
         @overlay?.hide()
         @$el.fadeOut 200, =>
-          defer.resolve()
           @_trigger 'afterclose', {}, { dialog: @$el }
+          defer.resolve()
       return defer.promise()
+
+    _applyOneTimeOptions: (options, currentOpen) ->
+
+      # clone
+      options = $.extend {}, options
+
+      # remove events from options.
+      # these should be handled via `_attachOneTimeEvents`
+      events = [
+        'beforeclose'
+        'afterclose'
+        'beforeopen'
+        'afteropen'
+      ]
+      $.each events, (i, ev) ->
+        if options[ev]
+          delete options[ev]
+
+      currentOptions = @options
+      @options = $.extend {}, @options, options
+      @$el.one "#{@widgetEventPrefix}afteropen", =>
+        if currentOpen?.killed then return
+        currentOpen.restoreOriginalOptions()
+      return this
 
     _attachOneTimeEvents: (localOptions, command, currentOpen) ->
 

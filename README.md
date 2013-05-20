@@ -12,6 +12,7 @@ Just a simple ajax/iframe/id-based fake dialog.
 * [bgiframe](http://takazudo.github.io/jQuery.ui.domwindow/demos/bgiframe/)
 * [spinjs](http://takazudo.github.io/jQuery.ui.domwindow/demos/spinjs/)
 * [flexibleresize](http://takazudo.github.io/jQuery.ui.domwindow/demos/flexiblesize/)
+* [open options](http://takazudo.github.io/jQuery.ui.domwindow/demos/openoptions/)
 
 ## Usage
 

@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jQuery.ui.domwindow</title>
+<link rel="stylesheet" href="../../domwindow.css">
+<style>
+body{
+	text-align:center;
+	font-family:sans-serif;
+	line-height:1.5;
+	background:#ddd;
+}
+#all{
+	text-align:left;
+	width:800px;
+	margin:0 auto;
+	padding:20px 0 50px;
+}
+.ui-domwindowdialog{
+	background:#fff;
+}
+pre{
+	border:1px solid #000;
+	padding:10px;
+	font-size:15px;
+	font-family:monospace;
+}
+hr {
+	margin: 30px 0;
+}
+</style>
+<script src="../../lib/jquery/1.9.1/jquery.js"></script>
+<script src="../../lib/jquery.ui.widget.js"></script>
+<script src="../../jquery.ui.domwindow.js"></script>
+<script>
+if (!window.console){
+	window.console = {}
+	window.console.log = function(arg){
+		alert(arg);
+
+	};
+}
+$(function(){
+	$.ui.domwindowdialog.setup({
+		width: 600, // dialog width
+		height: 300, // dialog height
+		spinnersrc: '../../spinner.gif' // specify this for preload
+	});
+});
+</script>
+</head>
+<body><div id="all">
+
+	<h1><a href="https://github.com/Takazudo/jQuery.ui.domwindow">jQuery.ui.domwindow</a> - demo - open options</h1>
+	<p>blah blah blah</p>
+
+	<h2>fullsize and fixed</h2>
+	<button id="open1">open</button>
+	<script>
+	$(function(){
+		var $window = $(window);
+		$('#open1').click(function(){
+			window.domwindowApi.open('dialogsrc', {
+				iddialog: true,
+				width: $window.width(),
+				height: $window.height(),
+				fixedMinY: 0,
+				tandbmargintodecideposition: 0
+			});
+		});
+	});
+	</script>
+
+	<h2>a little smaller than window + fixed</h2>
+	<button id="open2">open</button>
+	<script>
+	$(function(){
+		var $window = $(window);
+		$('#open2').click(function(){
+			window.domwindowApi.open('dialogsrc', {
+				iddialog: true,
+				width: $window.width() - 40,
+				height: $window.height() - 40,
+				fixedMinY: 20,
+				tandbmargintodecideposition: 0
+			});
+		});
+	});
+	</script>
+
+	<h2>forceabsolute</h2>
+	<button id="open3">open</button>
+	<script>
+	$(function(){
+		var $window = $(window);
+		$('#open3').click(function(){
+			window.domwindowApi.open('dialogsrc', {
+				iddialog: true,
+				width: $window.width() - 40,
+				height: $window.height() - 40,
+				forceabsolute: true,
+				fixedMinY: 20,
+				tandbmargintodecideposition: 0
+			});
+		});
+	});
+	</script>
+
+	<script type="text/x-dialogsrc" id="dialogsrc">
+		<div style="padding:30px">
+			<h2>iddialog example</h2>
+			<p><a class="apply-domwindow-close" href="#">close</a></p>
+		</div>
+	</script>
+
+	<hr />
+
+	dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test dummy test 
+
+</div></body>
+</html>

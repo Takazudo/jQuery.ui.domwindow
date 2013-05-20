@@ -1,5 +1,9 @@
 # jQuery.ui.domwindow - changelog
 
+## v.0.3.3
+
+* Fixed: some options passed to open/close method were not worked.
+
 ## v.0.3.2
 
 * refactored.
