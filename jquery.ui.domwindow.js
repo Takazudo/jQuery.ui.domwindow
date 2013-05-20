@@ -430,6 +430,10 @@
         currentOpen.restoreOriginalOptions = function() {
           return this.options = originalOptions;
         };
+        currentOpen.kill = function() {
+          currentOpen.restoreOriginalOptions();
+          currentOpen.killed = true;
+        };
         complete = function() {
           if (currentOpen.killed) {
             return;
@@ -553,10 +557,6 @@
             this._appendFetchedData(src);
             complete();
         }
-        currentOpen.kill = function() {
-          currentOpen.restoreOriginalOptions();
-          currentOpen.killed = true;
-        };
         return currentOpen;
       },
       close: function(options) {

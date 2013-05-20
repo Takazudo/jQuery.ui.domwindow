@@ -390,15 +390,26 @@ do ($=jQuery, win=window, doc=document) ->
 
       @_isOpen = true
 
+      # if any open is in progress, kill it.
       @_currentOpen?.kill()
       
+      # creat current open object
       @_currentOpen = currentOpen = {}
       currentOpen.defer = $.Deferred()
       
+      # passed options are only just for this open.
+      # so, prepare to restore original options.
       originalOptions = @options
       currentOpen.restoreOriginalOptions = ->
         @options = originalOptions
 
+      # attach kill method to handle force closing
+      currentOpen.kill = ->
+        currentOpen.restoreOriginalOptions()
+        currentOpen.killed = true
+        return
+
+      # this will be scheduled to be fired when the dialog was opened
       complete = =>
         if currentOpen.killed then return
         @$el.fadeIn 200, =>
@@ -408,6 +419,7 @@ do ($=jQuery, win=window, doc=document) ->
         wait(0).done => @center()
         currentOpen.defer.resolve()
 
+      # decide dialog type
       dialogType = null
       if $.isFunction(src)
         dialogType = 'deferred'
@@ -425,6 +437,7 @@ do ($=jQuery, win=window, doc=document) ->
           if options?.iddialog then dialogType = 'id'
           if options?.strdialog then dialogType = 'str'
 
+      # handles widget style.
       # if domwindow widget was attached to the target,
       # invoke its events when the dialog was opened or closed.
       if (dialogType is 'id')
@@ -437,20 +450,25 @@ do ($=jQuery, win=window, doc=document) ->
       else
         @$lastIdTarget = null
 
+      # apply one time options/events
       if options
         @_applyOneTimeOptions options, currentOpen
       @_attachOneTimeEvents options, 'open', currentOpen
 
+      # adjust size for dialog open
       w = @options.width
       h = @options.height
       @$el.css
         width: w
         height: h
 
+      # event
       @_trigger 'beforeopen', {}, { dialog: @$el }
 
+      # set minimum delay if there was it
       delay = @options.ajaxdialog_mindelay
 
+      # open dialog
       switch dialogType
         when 'deferred'
           @overlay?.show()
@@ -478,10 +496,6 @@ do ($=jQuery, win=window, doc=document) ->
           @_appendFetchedData src
           complete()
 
-      currentOpen.kill = ->
-        currentOpen.restoreOriginalOptions()
-        currentOpen.killed = true
-        return
       return currentOpen
 
     close: (options) ->
