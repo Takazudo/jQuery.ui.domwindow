@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <title>jQuery.ui.domwindow</title>
-<link rel="stylesheet" href="../domwindow.css">
+<link rel="stylesheet" href="../../domwindow.css">
 <style>
 body{
 	text-align:center;
@@ -26,15 +26,15 @@ pre{
 	font-family:monospace;
 }
 </style>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script src="../lib/jquery.ui.widget.js"></script>
-<script src="../jquery.ui.domwindow.js"></script>
+<script src="../../lib/jquery/1.9.1/jquery.js"></script>
+<script src="../../lib/jquery.ui.widget.js"></script>
+<script src="../../jquery.ui.domwindow.js"></script>
 <script>
 $(function(){
 	$.ui.domwindowdialog.setup({
 		width: 600, // dialog width
 		height: 300, // dialog height
-		spinnersrc: '../spinner.gif', // specify this for preload
+		spinnersrc: '../../spinner.gif', // specify this for preload
 		selector_open: '.apply-domwindow-open', // opener selector
 		selector_close: '.apply-domwindow-close' // closer selector
 	});
@@ -45,13 +45,13 @@ $(function(){
 <h1><a href="https://github.com/Takazudo/jQuery.ui.domwindow">jQuery.ui.domwindow</a> - demo - basic</h1>
 <h2>setup</h2>
 <p>Setup like below first. jQuery.ui.domwindow will delegate clicks.<br>
-See <a href="http://takazudo.github.com/jQuery.ui.domwindow/example-options/">options</a> for further info.</p>
+See options demo for further info.</p>
 </p>
 <pre>$(function(){
     $.ui.domwindowdialog.setup({
         width: 600, // dialog width
         height: 300, // dialog height
-        spinnersrc: '../spinner.gif', // specify this for preload
+        spinnersrc: '../../spinner.gif', // specify this for preload
         selector_open: '.apply-domwindow-open', // opener selector
         selector_close: '.apply-domwindow-close' // closer selector
     });

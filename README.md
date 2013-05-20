@@ -4,14 +4,14 @@ Just a simple ajax/iframe/id-based fake dialog.
 
 ## demos
 
-* [basic](http://takazudo.github.com/jQuery.ui.domwindow/example-basic/)
-* [api](http://takazudo.github.com/jQuery.ui.domwindow/example-api/)
-* [options](http://takazudo.github.com/jQuery.ui.domwindow/example-options/)
-* [widgetlike](http://takazudo.github.com/jQuery.ui.domwindow/example-widgetlike/)
-* [deferredopen](http://takazudo.github.com/jQuery.ui.domwindow/example-deferredopen/)
-* [bgiframe](http://takazudo.github.com/jQuery.ui.domwindow/example-bgiframe/)
-* [spinjs](http://takazudo.github.com/jQuery.ui.domwindow/example-spinjs/)
-* [flexibleresize](http://takazudo.github.com/jQuery.ui.domwindow/example-flexiblesize/)
+* [basic](http://takazudo.github.io/jQuery.ui.domwindow/demos/basic/)
+* [api](http://takazudo.github.io/jQuery.ui.domwindow/demos/api/)
+* [options](http://takazudo.github.io/jQuery.ui.domwindow/demos/options/)
+* [widgetlike](http://takazudo.github.io/jQuery.ui.domwindow/demos/widgetlike/)
+* [deferredopen](http://takazudo.github.io/jQuery.ui.domwindow/demos/deferredopen/)
+* [bgiframe](http://takazudo.github.io/jQuery.ui.domwindow/demos/bgiframe/)
+* [spinjs](http://takazudo.github.io/jQuery.ui.domwindow/demos/spinjs/)
+* [flexibleresize](http://takazudo.github.io/jQuery.ui.domwindow/demos/flexiblesize/)
 
 ## Usage
 
