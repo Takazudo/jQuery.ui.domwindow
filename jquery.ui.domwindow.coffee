@@ -111,11 +111,13 @@ do ($=jQuery, win=window, doc=document) ->
         lines: 15
         length: 22
         radius: 40
+
     widgetEventPrefix: 'hideoverlay.'
 
     _active: false
 
     _create: ->
+
       @$el = @element
       @$spinner = $('.ui-hideoverlay-spinner', @$el)
       if @options.spinjs then @$spinner.css 'background', 'none'
@@ -123,23 +125,27 @@ do ($=jQuery, win=window, doc=document) ->
       @_preloadSpinner()
       @_eventify()
       @_handleLegacy()
-      @
+      return this
 
     _attachSpinjs: ->
-      if not @_showDefer then return @
-      if not @_spinning then return @
+
+      if not @_showDefer then return this
+      if not @_spinning then return this
       (new Spinner @options.spinjs_options).spin(@$spinner[0])
+      return this
 
     _handleLegacy: ->
-      return @ unless @options.forceabsolute
+
+      return this unless @options.forceabsolute
       @$el.css 'position', 'absolute'
       @_resize()
       if @options.bgiframe and $.fn.bgiframe
         @$el.bgiframe()
-      @
+      return this
 
     _resize: ->
-      return @ unless @options.forceabsolute
+
+      return this unless @options.forceabsolute
       w = viewportW()
       h = viewportH()
       @$el.css
@@ -150,58 +156,64 @@ do ($=jQuery, win=window, doc=document) ->
       @$bg.css
         width: w
         height: h
+      return this
 
     _eventify: ->
-      return @ unless @options.forceabsolute
+
+      return this unless @options.forceabsolute
       $win.bind 'resize scroll orientationchange', => @_resize()
-      @
+      return this
 
     _showOverlayEl: (woSpinner) ->
-      $.Deferred (defer) =>
-        @$spinner.hide()
-        @$el.css 'display', 'block'
-        cssTo = { opacity: 0 }
-        animTo = { opacity: @options.maxopacity }
-        if @options.overlayfade
-          ($.when @$bg.stop().css(cssTo).animate(animTo, 200)).done =>
-            if not woSpinner
-              if @options.spinjs
-                @$spinner.show()
-                @_attachSpinjs()
-              @$spinner.hide().fadeIn()
-            defer.resolve()
-        else
-          @$bg.css(animTo)
+
+      defer = $.Deferred (defer)
+      @$spinner.hide()
+      @$el.css 'display', 'block'
+      cssTo = { opacity: 0 }
+      animTo = { opacity: @options.maxopacity }
+      if @options.overlayfade
+        ($.when @$bg.stop().css(cssTo).animate(animTo, 200)).done =>
           if not woSpinner
             if @options.spinjs
               @$spinner.show()
               @_attachSpinjs()
-            @$spinner.show()
+            @$spinner.hide().fadeIn()
           defer.resolve()
-      .promise()
+      else
+        @$bg.css(animTo)
+        if not woSpinner
+          if @options.spinjs
+            @$spinner.show()
+            @_attachSpinjs()
+          @$spinner.show()
+        defer.resolve()
+      return defer.promise()
 
     _hideOverlayEl: ->
-      $.Deferred (defer) =>
-        animTo = { opacity: 0 }
-        done = =>
-          @$el.css 'display', 'none'
-          @$spinner.show()
-          defer.resolve()
-        if @options.overlayfade
-          ($.when @$bg.stop().animate(animTo, 100)).done => done()
-        else
-          @$bg.css(animTo)
-          done()
-      .promise()
+
+      defer = $.Deferred (defer)
+      animTo = { opacity: 0 }
+      done = =>
+        @$el.css 'display', 'none'
+        @$spinner.show()
+        defer.resolve()
+      if @options.overlayfade
+        ($.when @$bg.stop().animate(animTo, 100)).done => done()
+      else
+        @$bg.css(animTo)
+        done()
+      return defer.promise()
 
     _preloadSpinner: ->
+
       src = @options.spinnersrc
-      if not src then return @
+      if not src then return this
       (new Image).src = src
-      @
+      return this
 
     show: (woSpinner) ->
-      if @_showDefer then return @._showDefer
+
+      if @_showDefer then return @_showDefer
       if @_active then return resolveSilently()
       @_active = true
       if woSpinner
@@ -214,12 +226,13 @@ do ($=jQuery, win=window, doc=document) ->
       @_showDefer.done =>
         @_showDefer = null
         @_trigger 'showend'
-      @_showDefer
+      return @_showDefer
 
     hide: ->
+
       if @_showDefer
         @_showDefer.done => @hide()
-        return @
+        return this
       if not @_active then return resolveSilently()
       @_active = false
       @_trigger 'hidestart'
@@ -227,33 +240,37 @@ do ($=jQuery, win=window, doc=document) ->
       @_hideDefer.done =>
         @_hideDefer = null
         @_trigger 'hideend'
-      @_hideDefer
+      return @_hideDefer
 
     hideSpinner: ->
+
       @_spinning = false
       @$spinner.stop().empty().hide()
-      @
+      return this
 
   $.ui.hideoverlay.create = (options) ->
+
     src = """
       <div class="ui-hideoverlay" id="domwindow-hideoverlay">
         <div class="ui-hideoverlay-bg"></div>
         <div class="ui-hideoverlay-spinner"></div>
       </div>
     """
-    $(src).hideoverlay(options)
+    return $(src).hideoverlay(options)
 
   $.ui.hideoverlay.destroy = (options) ->
+
     if not widgets.$overlay then return false
     widgets.$overlay.hideoverlay('destroy').remove()
     widgets.$overlay = null
-    true
+    return true
 
   $.ui.hideoverlay.setup = (options) ->
+
     $.ui.hideoverlay.destroy()
     $overlay = $.ui.hideoverlay.create(options).appendTo 'body'
     widgets.$overlay = $overlay
-    $overlay
+    return $overlay
 
 
   # ============================================================
@@ -281,17 +298,20 @@ do ($=jQuery, win=window, doc=document) ->
       centeronresize: true
       centeronscroll: false
       tandbmargintodecideposition: 50
+
     widgetEventPrefix: 'domwindowdialog.'
 
     _create: ->
+
       @$el = @element
       @$el.css
         width: @options.width
         height: @options.height
       @_eventify()
-      @
+      return this
 
     _eventify: ->
+
       self = @
       $doc.on 'click', @options.selector_open, (e) ->
         e.preventDefault()
@@ -306,19 +326,21 @@ do ($=jQuery, win=window, doc=document) ->
         @center() if @options.centeronscroll
       $win.on 'orientationchange', =>
         @center()
-      @
+      return this
 
     _appendFetchedData: (html) ->
+
       @$el.empty().append html
-      @
+      return this
 
     setOverlay: ($overlay) ->
-      if not @options.overlay then return @
+
+      if not @options.overlay then return this
       @$overlay = $overlay
       @overlay = $overlay.data 'uiHideoverlay'
       if @options.overlayclickclose
         @$overlay.bind 'click', => @close()
-      @
+      return this
 
     center: ->
 
@@ -362,8 +384,7 @@ do ($=jQuery, win=window, doc=document) ->
             props.position = 'fixed'
 
       @$el.css props
-
-      @
+      return this
 
     open: (src, options) ->
 
@@ -451,25 +472,27 @@ do ($=jQuery, win=window, doc=document) ->
           complete()
 
       currentOpen.kill = -> currentOpen.killed = true
-      currentOpen
+      return currentOpen
 
     close: (options) ->
-      $.Deferred (defer) =>
-        if not @_isOpen then return @
-        if @$lastIdTarget
-          options = $.extend {}, options, @$lastIdTarget.domwindow('createApiCloseOptions')
-        @_attachOneTimeEvents options, 'close'
-        @_currentOpen?.kill()
-        @_isOpen = false
-        @_trigger 'beforeclose', {}, { dialog: @$el }
-        wait(0).done =>
-          @overlay?.hide()
-          @$el.fadeOut 200, =>
-            defer.resolve()
-            @_trigger 'afterclose', {}, { dialog: @$el }
+      defer = $.Deferred()
+      if not @_isOpen then return this
+      if @$lastIdTarget
+        options = $.extend {}, options, @$lastIdTarget.domwindow('createApiCloseOptions')
+      @_attachOneTimeEvents options, 'close'
+      @_currentOpen?.kill()
+      @_isOpen = false
+      @_trigger 'beforeclose', {}, { dialog: @$el }
+      wait(0).done =>
+        @overlay?.hide()
+        @$el.fadeOut 200, =>
+          defer.resolve()
+          @_trigger 'afterclose', {}, { dialog: @$el }
+      return defer.promise()
 
     _attachOneTimeEvents: (localOptions, command, currentOpen) ->
-      if not localOptions then return @
+
+      if not localOptions then return this
       events = ['beforeclose', 'afterclose']
       if command is 'open'
         $.merge events, ['beforeopen', 'afteropen']
@@ -478,19 +501,21 @@ do ($=jQuery, win=window, doc=document) ->
           @$el.one "#{@widgetEventPrefix}#{ev}", (args...) ->
             if currentOpen?.killed then return
             localOptions[ev].apply @$el, args
-      @
+      return this
 
     _ajaxGet: (url) ->
+
       options =
         url: url
         dataType: 'text'
       if @options.ajaxdialog_avoidcache
         options.cache = false
-      $.ajax options
+      return $.ajax options
 
     _createIframeSrc: (url) ->
+
       name = genUniqId()
-      """
+      return """
         <iframe
           frameborder="0" hspace="0" wspace="0" src="#{url}" name="#{name}"
           style="width:100%; height:100%; border:none; background-color:#fff"
@@ -498,18 +523,21 @@ do ($=jQuery, win=window, doc=document) ->
       """
 
   $.ui.domwindowdialog.create = (options) ->
+
     src = """
       <div class="ui-domwindowdialog"></div>
     """
-    $(src).domwindowdialog(options)
+    return $(src).domwindowdialog(options)
 
   $.ui.domwindowdialog.destroy = ->
+
     if not widgets.$dialog then return false
     widgets.$dialog.domwindowdialog('destroy').remove()
     widgets.$dialog = null
-    true
+    return true
 
   $.ui.domwindowdialog.setup = (options) ->
+
     $.ui.domwindowdialog.destroy()
     $dialog = $.ui.domwindowdialog.create options
     $dialog.appendTo 'body'
@@ -517,7 +545,7 @@ do ($=jQuery, win=window, doc=document) ->
     $dialog.domwindowdialog 'setOverlay', $.ui.hideoverlay.setup(overlayOptions)
     domwindowApi = win.domwindowApi = new DomwindowApi $dialog
     widgets.$dialog = $dialog
-    $dialog
+    return $dialog
 
 
   # ============================================================
@@ -526,16 +554,18 @@ do ($=jQuery, win=window, doc=document) ->
   # narrowdown overlay options
 
   genOverlayOptions = (options) ->
+
     ret = {}
     return ret unless options
     $.each $.ui.hideoverlay.prototype.options, (key) ->
       if options[key] isnt undefined
         ret[key] = options[key]
-    ret
+    return ret
 
   # mostly we need to open dialog via anchor or button or something
 
   getInfoFromOpener = ns.getInfoFromOpener = (el) ->
+
     $el = $(el)
     ret = []
 
@@ -555,20 +585,24 @@ do ($=jQuery, win=window, doc=document) ->
       if w then o.width = w
 
     ret.push o
-    ret
+    return ret
 
-  genUniqId = -> "domwindow-uniqid-#{Math.round(Math.random()*1000)}"
+  genUniqId = ->
+    return "domwindow-uniqid-#{Math.round(Math.random()*1000)}"
 
   # DomwindowApi will be attached to window.domwindowApi.
   # is a facade to domwindowdialog
 
   class DomwindowApi
+
     constructor: (@$dialog) ->
       @dialog = @$dialog.data 'uiDomwindowdialog' # widget instance
+
     open: (args...) ->
-      @dialog.open.apply @dialog, args
+      return @dialog.open.apply @dialog, args
+
     close: (args...) ->
-      @dialog.close.apply @dialog, args
+      return @dialog.close.apply @dialog, args
 
 
   # ============================================================
@@ -576,16 +610,20 @@ do ($=jQuery, win=window, doc=document) ->
   # jQuery.ui.dialog widget style
 
   $.widget 'ui.domwindow',
+
     options:
       iddialog: true
+
     widgetEventPrefix: 'domwindow.'
+
     _create: ->
       @$el = @element
       @_id = @$el.attr('id') or do =>
         id = genUniqId()
         @$el.attr 'id', id
         id
-      @
+      return this
+
     createApiOpenOptions: ->
       self = @
       o = $.extend {}, @options
@@ -593,9 +631,10 @@ do ($=jQuery, win=window, doc=document) ->
       delete o.afteropen
       delete o.beforeclose
       delete o.afterclose
-      $.extend o,
+      return $.extend o,
         beforeopen: (e, data) -> self._trigger 'beforeopen', e, data
         afteropen: (e, data) -> self._trigger 'afteropen', e, data
+
     createApiCloseOptions: ->
       self = @
       o = {}
@@ -603,10 +642,13 @@ do ($=jQuery, win=window, doc=document) ->
       delete o.afteropen
       delete o.beforeclose
       delete o.afterclose
-      $.extend o,
+      return $.extend o,
         beforeclose: (e, data) -> self._trigger 'beforeclose', e, data
         afterclose: (e, data) -> self._trigger 'afterclose', e, data
+
     open: ->
-      domwindowApi.open @_id, @createApiOpenOptions()
+      return domwindowApi.open @_id, @createApiOpenOptions()
+
     close: ->
-      domwindowApi.close()
+      return domwindowApi.close()
+

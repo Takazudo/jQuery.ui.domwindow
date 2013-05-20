@@ -1,5 +1,5 @@
 /*! jQuery.ui.domwindow (https://github.com/Takazudo/jQuery.ui.domwindow)
- * lastupdate: 2013-05-17
+ * lastupdate: 2013-05-20
  * version: 0.3.1
  * author: 'Takazudo' Takeshi Takatsudo <takazudo@gmail.com>
  * License: MIT */
@@ -120,7 +120,8 @@
         if (!this._spinning) {
           return this;
         }
-        return (new Spinner(this.options.spinjs_options)).spin(this.$spinner[0]);
+        (new Spinner(this.options.spinjs_options)).spin(this.$spinner[0]);
+        return this;
       },
       _handleLegacy: function() {
         if (!this.options.forceabsolute) {
@@ -146,10 +147,11 @@
           top: $win.scrollTop(),
           left: $win.scrollLeft()
         });
-        return this.$bg.css({
+        this.$bg.css({
           width: w,
           height: h
         });
+        return this;
       },
       _eventify: function() {
         var _this = this;
@@ -162,62 +164,62 @@
         return this;
       },
       _showOverlayEl: function(woSpinner) {
-        var _this = this;
-        return $.Deferred(function(defer) {
-          var animTo, cssTo;
-          _this.$spinner.hide();
-          _this.$el.css('display', 'block');
-          cssTo = {
-            opacity: 0
-          };
-          animTo = {
-            opacity: _this.options.maxopacity
-          };
-          if (_this.options.overlayfade) {
-            return ($.when(_this.$bg.stop().css(cssTo).animate(animTo, 200))).done(function() {
-              if (!woSpinner) {
-                if (_this.options.spinjs) {
-                  _this.$spinner.show();
-                  _this._attachSpinjs();
-                }
-                _this.$spinner.hide().fadeIn();
-              }
-              return defer.resolve();
-            });
-          } else {
-            _this.$bg.css(animTo);
+        var animTo, cssTo, defer,
+          _this = this;
+        defer = $.Deferred(defer);
+        this.$spinner.hide();
+        this.$el.css('display', 'block');
+        cssTo = {
+          opacity: 0
+        };
+        animTo = {
+          opacity: this.options.maxopacity
+        };
+        if (this.options.overlayfade) {
+          ($.when(this.$bg.stop().css(cssTo).animate(animTo, 200))).done(function() {
             if (!woSpinner) {
               if (_this.options.spinjs) {
                 _this.$spinner.show();
                 _this._attachSpinjs();
               }
-              _this.$spinner.show();
+              _this.$spinner.hide().fadeIn();
             }
             return defer.resolve();
+          });
+        } else {
+          this.$bg.css(animTo);
+          if (!woSpinner) {
+            if (this.options.spinjs) {
+              this.$spinner.show();
+              this._attachSpinjs();
+            }
+            this.$spinner.show();
           }
-        }).promise();
+          defer.resolve();
+        }
+        return defer.promise();
       },
       _hideOverlayEl: function() {
-        var _this = this;
-        return $.Deferred(function(defer) {
-          var animTo, done;
-          animTo = {
-            opacity: 0
-          };
-          done = function() {
-            _this.$el.css('display', 'none');
-            _this.$spinner.show();
-            return defer.resolve();
-          };
-          if (_this.options.overlayfade) {
-            return ($.when(_this.$bg.stop().animate(animTo, 100))).done(function() {
-              return done();
-            });
-          } else {
-            _this.$bg.css(animTo);
+        var animTo, defer, done,
+          _this = this;
+        defer = $.Deferred(defer);
+        animTo = {
+          opacity: 0
+        };
+        done = function() {
+          _this.$el.css('display', 'none');
+          _this.$spinner.show();
+          return defer.resolve();
+        };
+        if (this.options.overlayfade) {
+          ($.when(this.$bg.stop().animate(animTo, 100))).done(function() {
             return done();
-          }
-        }).promise();
+          });
+        } else {
+          this.$bg.css(animTo);
+          done();
+        }
+        return defer.promise();
       },
       _preloadSpinner: function() {
         var src;
@@ -548,36 +550,36 @@
         return currentOpen;
       },
       close: function(options) {
-        var _this = this;
-        return $.Deferred(function(defer) {
-          var _ref;
-          if (!_this._isOpen) {
-            return _this;
+        var defer, _ref,
+          _this = this;
+        defer = $.Deferred();
+        if (!this._isOpen) {
+          return this;
+        }
+        if (this.$lastIdTarget) {
+          options = $.extend({}, options, this.$lastIdTarget.domwindow('createApiCloseOptions'));
+        }
+        this._attachOneTimeEvents(options, 'close');
+        if ((_ref = this._currentOpen) != null) {
+          _ref.kill();
+        }
+        this._isOpen = false;
+        this._trigger('beforeclose', {}, {
+          dialog: this.$el
+        });
+        wait(0).done(function() {
+          var _ref1;
+          if ((_ref1 = _this.overlay) != null) {
+            _ref1.hide();
           }
-          if (_this.$lastIdTarget) {
-            options = $.extend({}, options, _this.$lastIdTarget.domwindow('createApiCloseOptions'));
-          }
-          _this._attachOneTimeEvents(options, 'close');
-          if ((_ref = _this._currentOpen) != null) {
-            _ref.kill();
-          }
-          _this._isOpen = false;
-          _this._trigger('beforeclose', {}, {
-            dialog: _this.$el
-          });
-          return wait(0).done(function() {
-            var _ref1;
-            if ((_ref1 = _this.overlay) != null) {
-              _ref1.hide();
-            }
-            return _this.$el.fadeOut(200, function() {
-              defer.resolve();
-              return _this._trigger('afterclose', {}, {
-                dialog: _this.$el
-              });
+          return _this.$el.fadeOut(200, function() {
+            defer.resolve();
+            return _this._trigger('afterclose', {}, {
+              dialog: _this.$el
             });
           });
         });
+        return defer.promise();
       },
       _attachOneTimeEvents: function(localOptions, command, currentOpen) {
         var events,
