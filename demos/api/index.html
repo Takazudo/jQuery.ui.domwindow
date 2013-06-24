@@ -216,8 +216,8 @@ $(function(){
 		'	<p><a class="apply-domwindow-close" href="#">close</a></p>',
 		'</div>'
 	].join('');
-	$('#apiex-strdialog-open').click(str, function(){
-		window.domwindowApi.open('iddialogcontent', {
+	$('#apiex-strdialog-open').click(function(){
+		window.domwindowApi.open(str, {
 			strdialog: true,
 			width: 800,
 			height: 800,
@@ -244,8 +244,8 @@ $(function(){
         '    &lt;p&gt;&lt;a class=&quot;apply-domwindow-close&quot; href=&quot;#&quot;&gt;close&lt;/a&gt;&lt;/p&gt;',
         '&lt;/div&gt;'
     ].join('');
-    $('#apiex-strdialog-open').click(str, function(){
-        window.domwindowApi.open('iddialogcontent', {
+    $('#apiex-strdialog-open').click(function(){
+        window.domwindowApi.open(str, {
             strdialog: true,
             width: 800,
             height: 800,
