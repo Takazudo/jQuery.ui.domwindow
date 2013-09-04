@@ -80,8 +80,8 @@ do ($=jQuery, win=window, doc=document) ->
 
   # handle viewport things
 
-  viewportH = ns.viewportH = -> win.innerHeight or doc.documentElement.clientHeight or doc.body.clientHeight
-  viewportW = ns.viewportW = -> win.innerWidth or doc.documentElement.clientWidth or doc.body.clientWidth
+  viewportH = ns.viewportH = -> $win.height()
+  viewportW = ns.viewportW = -> $win.width()
   offsetY = ns.offsetY = -> win.pageYOffset or doc.documentElement.scrollTop or doc.body.scrollTop
   offsetX = ns.offsetX = -> win.pageXOffset or doc.documentElement.scrollLeft or doc.body.scrollLeft
 

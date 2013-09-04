@@ -1,5 +1,5 @@
 /*! jQuery.ui.domwindow (https://github.com/Takazudo/jQuery.ui.domwindow)
- * lastupdate: 2013-05-20
+ * lastupdate: 2013-09-04
  * version: 0.3.3
  * author: 'Takazudo' Takeshi Takatsudo <takazudo@gmail.com>
  * License: MIT */
@@ -66,10 +66,10 @@
       });
     };
     viewportH = ns.viewportH = function() {
-      return win.innerHeight || doc.documentElement.clientHeight || doc.body.clientHeight;
+      return $win.height();
     };
     viewportW = ns.viewportW = function() {
-      return win.innerWidth || doc.documentElement.clientWidth || doc.body.clientWidth;
+      return $win.width();
     };
     offsetY = ns.offsetY = function() {
       return win.pageYOffset || doc.documentElement.scrollTop || doc.body.scrollTop;
