@@ -1,5 +1,9 @@
 # jQuery.ui.domwindow - changelog
 
+## v.0.3.4
+
+* Fixed: iPhone could not caliculate window's height correctly.
+
 ## v.0.3.3
 
 * Fixed: some options passed to open/close method were not worked.
