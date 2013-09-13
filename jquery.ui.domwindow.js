@@ -1,5 +1,5 @@
 /*! jQuery.ui.domwindow (https://github.com/Takazudo/jQuery.ui.domwindow)
- * lastupdate: 2013-09-04
+ * lastupdate: 2013-09-13
  * version: 0.3.4
  * author: 'Takazudo' Takeshi Takatsudo <takazudo@gmail.com>
  * License: MIT */
@@ -269,6 +269,9 @@
         this._hideDefer = this._hideOverlayEl();
         this._hideDefer.done(function() {
           _this._hideDefer = null;
+          if (_this.$spinner) {
+            _this.$spinner.empty();
+          }
           return _this._trigger('hideend');
         });
         return this._hideDefer;

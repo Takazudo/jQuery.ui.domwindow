@@ -239,6 +239,8 @@ do ($=jQuery, win=window, doc=document) ->
       @_hideDefer = @_hideOverlayEl()
       @_hideDefer.done =>
         @_hideDefer = null
+        if @$spinner
+          @$spinner.empty()
         @_trigger 'hideend'
       return @_hideDefer
 
