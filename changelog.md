@@ -1,5 +1,10 @@
 # jQuery.ui.domwindow - changelog
 
+## v.0.3.5
+
+* Fixed: iPhone could not caliculate window's height correctly.
+* Fixed: spinner was left after hide
+
 ## v.0.3.4
 
 * Fixed: iPhone could not caliculate window's height correctly.
