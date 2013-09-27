@@ -28,6 +28,12 @@ jQuery UI widget 1.10.1
 IE6+ and other new browsers.  
 Maybe ok about mobile phones.
 
+## FAQ
+
+Q. I can't use fixed position on Android 2.X
+
+A: Add `user-scalable=no` to meta viewport. Android can't be fixed without this.
+
 ## How to build
 
 Use Grunt.
