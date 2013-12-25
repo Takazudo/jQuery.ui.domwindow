@@ -1,5 +1,5 @@
 /*! jQuery.ui.domwindow (https://github.com/Takazudo/jQuery.ui.domwindow)
- * lastupdate: 2013-09-27
+ * lastupdate: 2013-12-25
  * version: 0.3.5
  * author: 'Takazudo' Takeshi Takatsudo <takazudo@gmail.com>
  * License: MIT */
@@ -60,16 +60,25 @@
 
   };
     ns.positionFixedUnavailable = ns.ie6 || ns.isBlackListedMobile();
+    ns.isQuirks = function() {
+      if (navigator.userAgent.indexOf('MSIE') === -1) {
+        return false;
+      }
+      if ($.support.boxModel) {
+        return false;
+      }
+      return true;
+    };
     resolveSilently = function() {
       return $.Deferred(function(defer) {
         return defer.resolve();
       });
     };
     viewportH = ns.viewportH = function() {
-      return win.innerHeight || $win.height();
+      return win.innerHeight || $win.height() || doc.body.offsetHeight;
     };
     viewportW = ns.viewportW = function() {
-      return $win.width();
+      return $win.width() || doc.body.offsetWidth;
     };
     offsetY = ns.offsetY = function() {
       return win.pageYOffset || doc.documentElement.scrollTop || doc.body.scrollTop;
@@ -90,7 +99,7 @@
         spinnersrc: null,
         maxopacity: 0.8,
         bgiframe: false,
-        forceabsolute: ns.positionFixedUnavailable || false,
+        forceabsolute: ns.positionFixedUnavailable || ns.isQuirks() || false,
         spinjs: false,
         spinjs_options: {
           color: '#fff',
@@ -135,17 +144,19 @@
         return this;
       },
       _resize: function() {
-        var h, w;
+        var h, l, t, w;
         if (!this.options.forceabsolute) {
           return this;
         }
         w = viewportW();
         h = viewportH();
+        t = offsetY();
+        l = offsetX();
         this.$el.css({
           width: w,
           height: h,
-          top: $win.scrollTop(),
-          left: $win.scrollLeft()
+          top: t,
+          left: l
         });
         this.$bg.css({
           width: w,
@@ -318,7 +329,7 @@
         strdialog: false,
         overlay: true,
         overlayclickclose: true,
-        forceabsolute: ns.positionFixedUnavailable || false,
+        forceabsolute: ns.positionFixedUnavailable || ns.isQuirks() || false,
         centeronresize: true,
         centeronscroll: false,
         tandbmargintodecideposition: 50

@@ -69,6 +69,13 @@ do ($=jQuery, win=window, doc=document) ->
   # at last, can I use position fixed or not?
   ns.positionFixedUnavailable = ns.ie6 or ns.isBlackListedMobile()
 
+  # check quirks mode
+  ns.isQuirks = ->
+    if navigator.userAgent.indexOf('MSIE') is -1
+      return false
+    if $.support.boxModel
+      return false
+    return true
 
   # ============================================================
   # tiny utils
@@ -80,8 +87,8 @@ do ($=jQuery, win=window, doc=document) ->
 
   # handle viewport things
 
-  viewportH = ns.viewportH = -> win.innerHeight or $win.height()
-  viewportW = ns.viewportW = -> $win.width()
+  viewportH = ns.viewportH = -> win.innerHeight or $win.height() or doc.body.offsetHeight
+  viewportW = ns.viewportW = -> $win.width() or doc.body.offsetWidth
   offsetY = ns.offsetY = -> win.pageYOffset or doc.documentElement.scrollTop or doc.body.scrollTop
   offsetX = ns.offsetX = -> win.pageXOffset or doc.documentElement.scrollLeft or doc.body.scrollLeft
 
@@ -104,7 +111,7 @@ do ($=jQuery, win=window, doc=document) ->
       spinnersrc: null
       maxopacity: 0.8
       bgiframe: false
-      forceabsolute: ns.positionFixedUnavailable or false
+      forceabsolute: ns.positionFixedUnavailable or ns.isQuirks() or false
       spinjs: false
       spinjs_options:
         color:'#fff'
@@ -148,11 +155,13 @@ do ($=jQuery, win=window, doc=document) ->
       return this unless @options.forceabsolute
       w = viewportW()
       h = viewportH()
+      t = offsetY()
+      l = offsetX()
       @$el.css
         width: w
         height: h
-        top: $win.scrollTop()
-        left: $win.scrollLeft()
+        top: t
+        left: l
       @$bg.css
         width: w
         height: h
@@ -296,7 +305,7 @@ do ($=jQuery, win=window, doc=document) ->
       strdialog: false
       overlay: true
       overlayclickclose: true
-      forceabsolute: ns.positionFixedUnavailable or false
+      forceabsolute: ns.positionFixedUnavailable or ns.isQuirks() or false
       centeronresize: true
       centeronscroll: false
       tandbmargintodecideposition: 50
