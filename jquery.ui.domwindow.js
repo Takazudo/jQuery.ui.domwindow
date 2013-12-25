@@ -64,10 +64,10 @@
       if (navigator.userAgent.indexOf('MSIE') === -1) {
         return false;
       }
-      if ($.support.boxModel) {
-        return false;
+      if (doc.documentMode === 5) {
+        return true;
       }
-      return true;
+      return false;
     };
     resolveSilently = function() {
       return $.Deferred(function(defer) {

@@ -73,9 +73,9 @@ do ($=jQuery, win=window, doc=document) ->
   ns.isQuirks = ->
     if navigator.userAgent.indexOf('MSIE') is -1
       return false
-    if $.support.boxModel
-      return false
-    return true
+    if doc.documentMode is 5
+      return true
+    return false
 
   # ============================================================
   # tiny utils
